@@ -7,6 +7,27 @@
 <meta name="description" content="Owner-operated, licensed and insured plumber serving Tulsa. Water heaters (tank & tankless), leaks, fixtures, gas lines. Free estimates. Call or text 918-265-4033.">
 <meta property="og:title" content="Porter & Co. Plumbing — Tulsa">
 <meta property="og:description" content="Plumbing done right the first time. Free estimates. 918-265-4033.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="images/hero.jpg">
+<meta name="theme-color" content="#132F4C">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%23132F4C'/%3E%3Crect x='6' y='16' width='28' height='8' rx='2' fill='%23B8922E'/%3E%3Crect x='12' y='11' width='6' height='18' rx='1.5' fill='%23F0E6C4'/%3E%3Crect x='22' y='11' width='6' height='18' rx='1.5' fill='%23F0E6C4'/%3E%3Crect x='17' y='6' width='6' height='28' rx='1.5' fill='%23D4B15A'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Plumber",
+  "name": "Porter & Co. Plumbing",
+  "telephone": "+1-918-265-4033",
+  "email": "porterandcoplumbing@gmail.com",
+  "url": "https://futurexrp.github.io/PorterWebsite/",
+  "image": "https://futurexrp.github.io/PorterWebsite/images/hero.jpg",
+  "priceRange": "$$",
+  "address": {"@type": "PostalAddress", "streetAddress": "3101 S 63rd West Ave", "addressLocality": "Tulsa", "addressRegion": "OK", "postalCode": "74107", "addressCountry": "US"},
+  "areaServed": ["Tulsa", "Broken Arrow", "Sand Springs", "Jenks", "Bixby", "Glenpool", "Sapulpa", "Owasso", "Catoosa", "Sperry"],
+  "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], "opens": "08:00", "closes": "20:00"}],
+  "sameAs": ["https://www.facebook.com/porterandcoplumbing/"],
+  "founder": {"@type": "Person", "name": "Matt Porter"}
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -36,7 +57,7 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:1.0625rem;line-height:1.6;-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{font-family:"Bricolage Grotesque","IBM Plex Sans",system-ui,sans-serif;color:var(--head);line-height:1.05;letter-spacing:-.015em}
 h1{font-weight:800;font-size:clamp(2.5rem,5.6vw,4.6rem)}
-h2{font-weight:700;font-size:clamp(1.8rem,3.4vw,2.7rem);margin-bottom:.7rem}
+h2{font-weight:700;font-size:clamp(1.8rem,3.4vw,2.7rem);margin-bottom:.7rem;text-wrap:balance}
 h3{font-weight:700;font-size:1.25rem;margin-bottom:.35rem}
 p{max-width:62ch}
 a{color:inherit}
@@ -74,7 +95,7 @@ section{padding:5rem 0}
 @media (max-width:720px){.util .right{display:none}}
 
 /* header */
-header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 1px 0 var(--line)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 1px 0 var(--line)}
 .bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem 0}
 .brand{display:flex;align-items:center;gap:.7rem;text-decoration:none;color:var(--head)}
 .brand .mark{width:40px;height:40px;flex:none}
@@ -100,7 +121,16 @@ nav a:not(.btn):hover{color:var(--head)}
 
 /* hero */
 .hero{background:var(--navy);color:#DCE5EE;padding:4.5rem 0 5rem;position:relative;overflow:hidden}
-.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 85% 30%,rgba(184,146,46,.16),transparent 60%);pointer-events:none}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 85% 30%,rgba(184,146,46,.18),transparent 60%),radial-gradient(600px 400px at 10% 90%,rgba(29,64,99,.9),transparent 70%);pointer-events:none}
+.hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent 85%);-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent 85%);pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--brass-2);margin-bottom:1.1rem}
+.eyebrow::before{content:"";width:28px;height:2px;background:var(--brass)}
+.hero .slot{transform:rotate(-1.2deg);transition:transform .4s}
+.hero .slot:hover{transform:rotate(0)}
+.hero-stats{display:flex;flex-wrap:wrap;gap:1.6rem 2.4rem;margin-top:2.2rem;padding-top:1.6rem;border-top:1px solid rgba(255,255,255,.12)}
+.hero-stats div{display:grid;gap:.1rem}
+.hero-stats b{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.5rem;color:#fff;line-height:1}
+.hero-stats span{font-size:.85rem;color:#AFC0D0}
 .hero .wrap{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:3.5rem;align-items:center}
 @media (max-width:900px){.hero .wrap{grid-template-columns:1fr}}
 .hero h1{color:#fff;max-width:13ch}
@@ -112,7 +142,8 @@ nav a:not(.btn):hover{color:var(--head)}
 .hero .slot{aspect-ratio:4/3;box-shadow:0 30px 60px -30px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.08)}
 
 /* trust strip */
-.trust{background:var(--panel);border-bottom:1px solid var(--line)}
+.trust{background:var(--panel);border-bottom:1px solid var(--line);position:relative}
+.trust::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--brass),var(--brass-2),var(--brass))}
 .trust .wrap{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;padding:1.4rem 0}
 .trust div{display:flex;gap:.7rem;align-items:center;font-size:.95rem;font-weight:500;color:var(--head)}
 .trust svg{width:26px;height:26px;color:var(--brass);flex:none}
@@ -123,7 +154,10 @@ nav a:not(.btn):hover{color:var(--head)}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2.5rem}
 @media (max-width:900px){.grid3{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:600px){.grid3{grid-template-columns:1fr}}
-.svc{border:1px solid var(--line);border-radius:14px;padding:1.6rem;background:var(--bg);display:flex;flex-direction:column;gap:.6rem}
+.svc{border:1px solid var(--line);border-radius:14px;padding:1.6rem;background:var(--bg);display:flex;flex-direction:column;gap:.6rem;position:relative;transition:transform .2s,box-shadow .2s,border-color .2s}
+.svc::after{content:"";position:absolute;left:1.6rem;right:1.6rem;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--brass);transform:scaleX(0);transform-origin:left;transition:transform .25s}
+.svc:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--panel-2)}
+.svc:hover::after{transform:scaleX(1)}
 .svc .ico{width:52px;height:52px;border-radius:12px;background:var(--panel);display:grid;place-items:center;margin-bottom:.4rem}
 .svc .ico svg{width:30px;height:30px;color:var(--navy)}
 :root[data-theme="dark"] .svc .ico svg{color:var(--brass-2)}
@@ -144,10 +178,25 @@ nav a:not(.btn):hover{color:var(--head)}
 .compare h4{font-size:1.05rem;margin-bottom:.4rem}
 .compare ul{list-style:none;font-size:.93rem;color:var(--muted);display:grid;gap:.25rem}
 
+/* recent work gallery */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:2.5rem}
+@media (max-width:900px){.gallery{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.gallery{grid-template-columns:1fr}}
+.tile{position:relative;overflow:hidden;border-radius:14px;aspect-ratio:4/3;max-width:100%;background:linear-gradient(145deg,var(--navy-3),var(--navy-2));color:#fff;isolation:isolate}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.tile:hover img{transform:scale(1.05)}
+.tile .art{position:absolute;inset:0;display:grid;place-items:center}
+.tile .art svg{width:38%;height:38%;color:var(--brass-2);opacity:.9}
+.tile .cap{position:absolute;left:0;right:0;bottom:0;padding:2.4rem 1.1rem .95rem;background:linear-gradient(180deg,transparent,rgba(12,32,54,.92));font-weight:600;font-size:.98rem;z-index:2}
+.tile .cap small{display:block;font-weight:400;color:#C4D2DF;font-size:.85rem}
+.tile::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+.tile:has(img)::after,.tile:has(img) .art{display:none}
+
 /* steps */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:2.5rem;counter-reset:s}
 @media (max-width:800px){.steps{grid-template-columns:1fr}}
-.step{border-top:3px solid var(--brass);padding-top:1.2rem;counter-increment:s}
+.step{border-top:3px solid var(--brass);padding-top:1.2rem;counter-increment:s;transition:border-color .2s}
+.step h3::before{font-family:"Bricolage Grotesque",sans-serif}
 .step h3::before{content:counter(s) ". ";color:var(--brass)}
 .step p{color:var(--muted);font-size:.98rem}
 
@@ -158,7 +207,9 @@ nav a:not(.btn):hover{color:var(--head)}
 .gbadge .stars{color:var(--brass-2);letter-spacing:.06em}
 .rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.3rem;margin-top:2.2rem}
 @media (max-width:900px){.rgrid{grid-template-columns:1fr}}
-.rev{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:1.5rem;display:flex;flex-direction:column;gap:.8rem}
+.rev{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:1.5rem;display:flex;flex-direction:column;gap:.8rem;position:relative;transition:background .2s,border-color .2s}
+.rev:hover{background:rgba(255,255,255,.08);border-color:rgba(212,177,90,.4)}
+.rev::before{content:"\201C";position:absolute;top:.4rem;right:1.1rem;font-family:"Bricolage Grotesque",sans-serif;font-size:4rem;line-height:1;color:var(--brass);opacity:.35}
 .rev .stars{color:var(--brass-2);letter-spacing:.06em}
 .rev blockquote{font-family:"Bricolage Grotesque",sans-serif;font-weight:500;font-size:1.15rem;line-height:1.35;color:#fff;flex:1}
 .rev cite{font-style:normal;color:#AFC0D0;font-size:.92rem}
@@ -182,7 +233,10 @@ details[open] summary::after{content:"–"}
 details p{padding:0 0 1.2rem;color:var(--muted)}
 
 /* band */
-.band{background:var(--navy-2);color:#fff;padding:4rem 0}
+.band{background:var(--navy-2);color:#fff;padding:4rem 0;position:relative;overflow:hidden}
+.band::before{content:"";position:absolute;inset:0;background:url("images/band.jpg") center/cover no-repeat;opacity:.28;pointer-events:none}
+.band::after{content:"";position:absolute;inset:0;background:radial-gradient(700px 300px at 90% 50%,rgba(184,146,46,.25),transparent 70%);pointer-events:none}
+.band .wrap{position:relative;z-index:1}
 .band .wrap{display:flex;flex-wrap:wrap;gap:1.5rem;align-items:center;justify-content:space-between}
 .band h2{color:#fff;margin:0;max-width:22ch}
 .band p{color:#C4D2DF;margin-top:.4rem}
@@ -195,7 +249,7 @@ details p{padding:0 0 1.2rem;color:var(--muted)}
 .about-hero p+p{margin-top:1rem}
 .values{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:2.5rem}
 @media (max-width:800px){.values{grid-template-columns:1fr}}
-.val{background:var(--panel);border-radius:14px;padding:1.6rem}
+.val{background:var(--panel);border-radius:14px;padding:1.6rem;border-left:4px solid var(--brass)}
 .val h3{font-size:1.15rem}
 .val p{color:var(--muted);font-size:.98rem}
 .creed{border-left:4px solid var(--brass);padding:.5rem 0 .5rem 1.6rem;margin:2.5rem 0}
@@ -313,6 +367,7 @@ footer .fine{border-top:1px solid rgba(255,255,255,.12);margin-top:2.5rem;paddin
   <div class="hero">
     <div class="wrap">
       <div>
+        <p class="eyebrow">Licensed &amp; insured · Tulsa, OK</p>
         <h1>Plumbing done right the first time.</h1>
         <p class="lead">Water heaters, leaks, fixtures, and gas lines for homes across Tulsa. Owner-operated, licensed, and insured — you get a straight answer and a fair price, from the plumber who actually does the work.</p>
         <div class="cta-row">
@@ -320,6 +375,12 @@ footer .fine{border-top:1px solid rgba(255,255,255,.12);margin-top:2.5rem;paddin
           <a class="btn btn-ghost" href="#contact">Request a free estimate</a>
         </div>
         <div class="hero-proof"><span class="stars">★★★★★</span><span><b>5.0 on Google</b> — every review, five stars</span></div>
+        <div class="hero-stats">
+          <div><b>Free</b><span>Written estimates</span></div>
+          <div><b>Same-week</b><span>Water heater swaps</span></div>
+          <div><b>Mon–Sat</b><span>8 AM to 8 PM</span></div>
+          <div><b>Owner</b><span>On every job</span></div>
+        </div>
       </div>
       <div class="slot" aria-label="Illustration of a home's plumbing system">
         <img src="images/hero.jpg" alt="Matt Porter installing a tankless water heater" onerror="this.remove()">
@@ -329,8 +390,12 @@ footer .fine{border-top:1px solid rgba(255,255,255,.12);margin-top:2.5rem;paddin
             <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1A3A5A"/><stop offset="1" stop-color="#15304D"/></linearGradient>
           </defs>
           <rect width="800" height="600" fill="url(#sky)"/>
+          <circle cx="640" cy="120" r="70" fill="#B8922E" opacity=".22"/>
+          <circle cx="640" cy="120" r="44" fill="#D4B15A" opacity=".55"/>
+          <g stroke="#DCE5EE" stroke-opacity=".25" stroke-width="2" stroke-linecap="round"><path d="M90 130h60M120 150h90M560 60h50M600 80h80"/></g>
           <!-- ground -->
           <rect y="470" width="800" height="130" fill="#0C2036"/>
+          <ellipse cx="400" cy="472" rx="300" ry="14" fill="#000" opacity=".35"/>
           <path d="M0 470h800" stroke="#B8922E" stroke-width="2" opacity=".5"/>
           <!-- house body -->
           <path d="M150 470V250L400 90l250 160v220z" fill="url(#wall)" stroke="#2C5580" stroke-width="3"/>
@@ -400,6 +465,7 @@ footer .fine{border-top:1px solid rgba(255,255,255,.12);margin-top:2.5rem;paddin
 
   <section>
     <div class="wrap">
+      <p class="eyebrow" style="color:var(--brass)">Services</p>
       <h2>What we do</h2>
       <p class="lead">Residential plumbing repair and replacement. If it carries water or gas through your house, we work on it.</p>
       <div class="grid3">
@@ -441,6 +507,7 @@ footer .fine{border-top:1px solid rgba(255,255,255,.12);margin-top:2.5rem;paddin
         </svg>
       </div>
       <div>
+        <p class="eyebrow" style="color:var(--brass)">Water heaters</p>
         <h2>Tank or tankless? We'll tell you the truth.</h2>
         <p class="lead">Water heaters are most of what we do, and most of the five-star reviews you'll read below. We install both kinds — and we'll recommend the one that fits your house and your budget, not the one with the bigger price tag.</p>
         <div class="compare">
@@ -452,8 +519,25 @@ footer .fine{border-top:1px solid rgba(255,255,255,.12);margin-top:2.5rem;paddin
     </div>
   </section>
 
+
   <section>
     <div class="wrap">
+      <p class="eyebrow" style="color:var(--brass)">Recent work</p>
+      <h2>Clean installs, tested before we leave</h2>
+      <p class="lead">A few of the jobs we do every week around Tulsa. Every one comes with a written price up front and a warranty behind it.</p>
+      <div class="gallery">
+        <figure class="tile"><img src="images/work-1.jpg" alt="Tankless water heater installed on a garage wall with copper lines" onerror="this.remove()"><div class="art"><svg><use href="#s-heater"/></svg></div><figcaption class="cap">Tankless conversion<small>Gas, venting, and condensate drain</small></figcaption></figure>
+        <figure class="tile"><img src="images/work-2.jpg" alt="New 50-gallon tank water heater with expansion tank" onerror="this.remove()"><div class="art"><svg><use href="#s-heater"/></svg></div><figcaption class="cap">Tank replacement<small>50-gallon gas, expansion tank added</small></figcaption></figure>
+        <figure class="tile"><img src="images/work-3.jpg" alt="Black iron gas line run to a kitchen range" onerror="this.remove()"><div class="art"><svg><use href="#s-gas"/></svg></div><figcaption class="cap">Gas line for a range<small>Pressure-tested to code</small></figcaption></figure>
+        <figure class="tile"><img src="images/work-4.jpg" alt="Newly installed kitchen faucet" onerror="this.remove()"><div class="art"><svg><use href="#s-faucet"/></svg></div><figcaption class="cap">Kitchen faucet<small>Pull-down faucet and new supply lines</small></figcaption></figure>
+        <figure class="tile"><img src="images/work-5.jpg" alt="Shower valve replacement in a tiled shower" onerror="this.remove()"><div class="art"><svg><use href="#s-leak"/></svg></div><figcaption class="cap">Shower valve<small>Pressure-balanced valve and trim</small></figcaption></figure>
+        <figure class="tile"><img src="images/work-6.jpg" alt="New quarter-turn main shut-off valve" onerror="this.remove()"><div class="art"><svg><use href="#s-home"/></svg></div><figcaption class="cap">Main shut-off valve<small>Quarter-turn ball valve, easy to reach</small></figcaption></figure>
+      </div>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
+      <p class="eyebrow" style="color:var(--brass)">The process</p>
       <h2>How it works</h2>
       <p class="lead">No dispatchers, no upsell script. Here's what happens when you call.</p>
       <div class="steps">
