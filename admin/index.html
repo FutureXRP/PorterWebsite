@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Porter Admin</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='6' fill='%230F3B75'/%3E%3Crect x='6' y='16' width='28' height='8' rx='2' fill='%23F26A21'/%3E%3Crect x='12' y='11' width='6' height='18' rx='1.5' fill='%23fff'/%3E%3Crect x='22' y='11' width='6' height='18' rx='1.5' fill='%23fff'/%3E%3Crect x='17' y='6' width='6' height='28' rx='1.5' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --blue:#0F3B75; --blue-dark:#0A2A54; --blue-mid:#1B57A6; --blue-tint:#E7EFF9;
+  --orange:#F26A21; --orange-dark:#D9581A; --orange-tint:#FDEDE3;
+  --bg:#F3F5F8; --surface:#FFFFFF; --surface-2:#F7F9FC; --line:#DDE3EA; --line-2:#EDF0F4;
+  --text:#1F2933; --muted:#5A6B7C; --faint:#8A97A6; --head:#0A2A54;
+  --sb-bg:#0A2A54; --sb-text:#B8C7D9; --sb-active:#123A70;
+  --s1:#1B57A6; --s2:#F26A21; --s3:#1baf7a; --s4:#eda100;
+  --good:#0ca30c; --good-text:#006300; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+  --good-bg:#E6F6E6; --warn-bg:#FFF4DA; --crit-bg:#FBE5E5; --info-bg:#E7EFF9;
+  --grid:#E6E9EE; --axis:#C9D1DB;
+  --shadow:0 8px 24px -10px rgba(10,42,84,.22);
+  --radius:6px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F1720; --surface:#161F2B; --surface-2:#1B2533; --line:#2A3542; --line-2:#222C39;
+    --text:#E3E9F0; --muted:#9AA9BA; --faint:#6F7E8F; --head:#F4F7FA;
+    --blue-tint:#1A2A40; --orange-tint:#3A2417;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+    --good-text:#3fbf3f;
+    --good-bg:#12301A; --warn-bg:#3A2E10; --crit-bg:#3A1717; --info-bg:#1A2A40;
+    --grid:#232D3A; --axis:#2F3A48;
+    --shadow:0 8px 24px -10px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1720; --surface:#161F2B; --surface-2:#1B2533; --line:#2A3542; --line-2:#222C39;
+  --text:#E3E9F0; --muted:#9AA9BA; --faint:#6F7E8F; --head:#F4F7FA;
+  --blue-tint:#1A2A40; --orange-tint:#3A2417;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500;
+  --good-text:#3fbf3f;
+  --good-bg:#12301A; --warn-bg:#3A2E10; --crit-bg:#3A1717; --info-bg:#1A2A40;
+  --grid:#232D3A; --axis:#2F3A48;
+  --shadow:0 8px 24px -10px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:"Open Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:.92rem;color:var(--text);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:"Montserrat","Open Sans",sans-serif;color:var(--head);line-height:1.2}
+h1{font-size:1.35rem;font-weight:800}
+h2{font-size:1.05rem;font-weight:700}
+h3{font-size:.95rem;font-weight:700}
+a{color:inherit}
+button{font:inherit;cursor:pointer}
+svg{display:block}
+[hidden]{display:none!important}
+.num{font-variant-numeric:tabular-nums}
+
+/* app shell */
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100%;background:linear-gradient(90deg,var(--sb-bg) 240px,transparent 240px)}
+.sidebar{background:var(--sb-bg);color:var(--sb-text);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;height:100dvh;overflow-y:auto}
+.sb-brand{display:flex;align-items:center;gap:.7rem;padding:1.1rem 1.1rem .9rem;color:#fff;text-decoration:none}
+.sb-brand svg{width:36px;height:36px;flex:none}
+.sb-brand b{font-family:"Montserrat",sans-serif;font-weight:800;font-size:.98rem;display:block;line-height:1.1}
+.sb-brand small{font-size:.7rem;color:var(--sb-text);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.sb-sec{font-family:"Montserrat",sans-serif;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:#6F86A3;padding:1rem 1.2rem .35rem;font-weight:700}
+.sb-nav{display:grid;gap:2px;padding:0 .6rem}
+.sb-nav button{display:flex;align-items:center;gap:.7rem;width:100%;text-align:left;background:none;border:0;color:var(--sb-text);padding:.6rem .7rem;border-radius:var(--radius);font-weight:600;font-size:.9rem;border-left:3px solid transparent}
+.sb-nav button svg{width:18px;height:18px;flex:none;opacity:.85}
+.sb-nav button:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-nav button.active{background:var(--sb-active);color:#fff;border-left-color:var(--orange)}
+.sb-nav .cnt{margin-left:auto;background:var(--orange);color:#fff;font-size:.7rem;font-weight:700;border-radius:999px;padding:.05rem .45rem;font-family:"Montserrat",sans-serif}
+.sb-foot{margin-top:auto;padding:1rem 1.2rem;font-size:.78rem;border-top:1px solid rgba(255,255,255,.08)}
+.sb-foot a{color:#fff;text-decoration:none;font-weight:600}
+.sb-foot .demo{display:inline-block;background:rgba(242,106,33,.18);color:#FFB380;border:1px solid rgba(242,106,33,.4);border-radius:4px;padding:.1rem .45rem;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:1rem;padding:.7rem 1.5rem}
+.topbar h1{flex:none}
+.topbar .sub{color:var(--muted);font-size:.85rem}
+.search{flex:1;max-width:420px;display:flex;align-items:center;gap:.5rem;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:.45rem .7rem;color:var(--muted)}
+.search svg{width:16px;height:16px;flex:none}
+.search input{border:0;background:none;outline:0;width:100%;color:var(--text);font:inherit}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:.6rem}
+.iconbtn{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);width:38px;height:38px;display:grid;place-items:center;color:var(--muted)}
+.iconbtn svg{width:18px;height:18px}
+.iconbtn .dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--crit);border:2px solid var(--surface)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-family:"Montserrat",sans-serif;font-weight:700;font-size:.85rem}
+.menu-btn{display:none}
+.content{padding:1.5rem;display:grid;gap:1.25rem;align-content:start}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border-radius:var(--radius);border:1px solid transparent;padding:.55rem .95rem;font-family:"Montserrat",sans-serif;font-weight:700;font-size:.82rem;text-decoration:none;white-space:nowrap;line-height:1.2}
+.btn svg{width:15px;height:15px}
+.btn-cta{background:var(--orange);color:#fff}.btn-cta:hover{background:var(--orange-dark)}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:var(--blue-mid)}
+.btn-ghost{background:var(--surface);color:var(--head);border-color:var(--line)}.btn-ghost:hover{border-color:var(--muted)}
+.btn-sm{padding:.35rem .65rem;font-size:.76rem}
+.btn-link{background:none;border:0;color:var(--blue-mid);font-weight:700;font-family:"Montserrat",sans-serif;font-size:.8rem;padding:0}
+.btn-link:hover{text-decoration:underline}
+
+/* cards / grid */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.2rem;min-width:0}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.9rem}
+.card-h .sub{color:var(--muted);font-size:.82rem;margin-top:.1rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:1.25rem}
+.g12{display:grid;grid-template-columns:1fr 2fr;gap:1.25rem}
+.g21,.g12{align-items:start}
+.scroll-list{max-height:440px;overflow-y:auto;padding-right:.2rem}
+@media (max-width:1100px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}.g21,.g12{grid-template-columns:1fr}}
+@media (max-width:700px){.g4,.g3,.g2{grid-template-columns:1fr}}
+
+/* stat tiles */
+.stat .label{font-size:.8rem;color:var(--muted);font-weight:600}
+.stat .value{font-family:"Montserrat",sans-serif;font-weight:800;font-size:1.7rem;color:var(--head);line-height:1.15;margin:.2rem 0 .3rem}
+.stat .delta{font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.35rem}
+.stat .delta.up{color:var(--good-text)}.stat .delta.down{color:var(--crit)}
+.stat .spark{margin-top:.6rem}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;margin:0 -1.2rem;padding:0 1.2rem}
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+th{text-align:left;font-family:"Montserrat",sans-serif;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:.55rem .6rem;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:.65rem .6rem;border-bottom:1px solid var(--line-2);vertical-align:middle;white-space:nowrap}
+td.wrap{white-space:normal;min-width:180px}
+tr:last-child td{border-bottom:0}
+tbody tr.click{cursor:pointer}
+tbody tr.click:hover{background:var(--surface-2)}
+td .sub{display:block;color:var(--muted);font-size:.78rem}
+td.r,th.r{text-align:right}
+.name{font-weight:700;color:var(--head)}
+
+/* pills, chips */
+.pill{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.15rem .6rem;font-size:.74rem;font-weight:700;font-family:"Montserrat",sans-serif;white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.p-good{background:var(--good-bg);color:var(--good-text)}
+.p-warn{background:var(--warn-bg);color:#8A5A00}
+.p-crit{background:var(--crit-bg);color:var(--crit)}
+.p-info{background:var(--info-bg);color:var(--blue-mid)}
+.p-neutral{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+:root[data-theme="dark"] .p-warn{color:#F5C55A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .p-warn{color:#F5C55A}}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:.3rem .8rem;font-size:.78rem;font-weight:600;color:var(--muted)}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem}
+.toolbar .search{max-width:300px}
+.toolbar .spacer{flex:1}
+.tech-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.4rem;vertical-align:middle}
+
+/* lists */
+.list{display:grid;gap:.5rem}
+.item{display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center;padding:.65rem .75rem;border:1px solid var(--line-2);border-radius:var(--radius);background:var(--surface-2)}
+.item .t{font-size:.78rem;color:var(--muted);font-family:"Montserrat",sans-serif;font-weight:700;min-width:64px}
+.item b{color:var(--head);display:block;font-size:.88rem}
+.item span{color:var(--muted);font-size:.8rem}
+.alert{display:grid;grid-template-columns:auto 1fr auto;gap:.7rem;align-items:center;padding:.6rem .75rem;border-radius:var(--radius);font-size:.85rem}
+.alert svg{width:18px;height:18px;flex:none}
+.alert.crit{background:var(--crit-bg);color:var(--crit)}
+.alert.warn{background:var(--warn-bg);color:#8A5A00}
+.alert.info{background:var(--info-bg);color:var(--blue-mid)}
+:root[data-theme="dark"] .alert.warn{color:#F5C55A}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .alert.warn{color:#F5C55A}}
+.alert b{color:inherit}
+.alert .btn-link{color:inherit}
+
+/* schedule */
+.week{display:grid;grid-template-columns:repeat(6,1fr);gap:.6rem;min-width:900px}
+.week-wrap{overflow-x:auto}
+.day{background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--radius);min-height:360px;padding:.5rem}
+.day h4{font-family:"Montserrat",sans-serif;font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:flex;justify-content:space-between;padding:.2rem .3rem .5rem}
+.day h4 b{color:var(--head);font-size:.95rem}
+.day.today{border-color:var(--orange);background:var(--surface)}
+.day.today h4 b{color:var(--orange)}
+.job{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--s1);border-radius:4px;padding:.5rem .6rem;margin-bottom:.45rem;cursor:pointer;font-size:.8rem}
+.job:hover{box-shadow:var(--shadow)}
+.job .jt{font-family:"Montserrat",sans-serif;font-weight:700;font-size:.72rem;color:var(--muted)}
+.job b{display:block;color:var(--head);font-size:.84rem}
+.job span{color:var(--muted);display:block}
+.legend{display:flex;flex-wrap:wrap;gap:1rem;font-size:.8rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.35rem;vertical-align:middle}
+
+/* charts */
+.chart{position:relative;width:100%}
+.chart svg{width:100%;height:auto;overflow:visible}
+.tip{position:absolute;pointer-events:none;background:var(--head);color:#fff;font-size:.76rem;padding:.35rem .55rem;border-radius:4px;white-space:nowrap;transform:translate(-50%,calc(-100% - 8px));opacity:0;transition:opacity .1s;z-index:5}
+:root[data-theme="dark"] .tip{background:#fff;color:#0A2A54}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tip{background:#fff;color:#0A2A54}}
+.tip.show{opacity:1}
+.hbar-row{display:grid;grid-template-columns:150px 1fr 80px;gap:.7rem;align-items:center;font-size:.84rem;padding:.3rem 0}
+.hbar-row .track{height:12px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.hbar-row .fill{height:100%;background:var(--s1);border-radius:0 3px 3px 0}
+.hbar-row .v{text-align:right;color:var(--muted)}
+.meter{height:10px;background:var(--blue-tint);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--s1)}
+.meter.warn{background:var(--warn-bg)}.meter.warn i{background:var(--warn)}
+.meter.crit{background:var(--crit-bg)}.meter.crit i{background:var(--crit)}
+
+/* staff cards */
+.staff{display:grid;grid-template-columns:auto 1fr;gap:.9rem;align-items:start}
+.staff .avatar{width:48px;height:48px;font-size:1rem}
+.staff .role{color:var(--muted);font-size:.8rem}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:.25rem .9rem;font-size:.84rem;margin-top:.7rem}
+.kv dt{color:var(--muted)}
+.kv dd{color:var(--text);font-weight:600}
+
+/* drawer / modal */
+.overlay{position:fixed;inset:0;background:rgba(10,42,84,.45);z-index:40;display:none}
+.overlay.show{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(480px,100%);background:var(--surface);z-index:41;box-shadow:-10px 0 40px rgba(0,0,0,.25);transform:translateX(100%);transition:transform .2s;overflow-y:auto;padding:1.4rem 1.5rem calc(1.4rem + env(safe-area-inset-bottom,0px))}
+.drawer.show{transform:none}
+.drawer h2{margin-bottom:.2rem}
+.drawer .close{position:absolute;top:1rem;right:1rem}
+.drawer section{margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--line)}
+.drawer section h3{margin-bottom:.5rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.modal{position:fixed;inset:0;z-index:42;display:none;place-items:center;padding:1rem}
+.modal.show{display:grid}
+.modal .box{background:var(--surface);border-radius:var(--radius);width:min(560px,100%);padding:1.5rem;box-shadow:var(--shadow);max-height:90vh;overflow-y:auto}
+.modal h2{margin-bottom:1rem}
+form.f{display:grid;gap:.8rem}
+.f label{display:grid;gap:.3rem;font-size:.8rem;font-weight:600;color:var(--head)}
+.f input,.f select,.f textarea{font:inherit;padding:.55rem .7rem;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--text);width:100%}
+.f textarea{min-height:80px;resize:vertical}
+.f .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.f .actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:.4rem}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid rgba(242,106,33,.45);outline-offset:1px}
+.toast{position:fixed;left:50%;bottom:calc(1.2rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--head);color:#fff;padding:.7rem 1.1rem;border-radius:var(--radius);font-weight:600;font-size:.86rem;opacity:0;transition:.2s;z-index:50;box-shadow:var(--shadow);max-width:calc(100% - 2rem)}
+:root[data-theme="dark"] .toast{background:#fff;color:#0A2A54}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .toast{background:#fff;color:#0A2A54}}
+.toast.show{opacity:1;transform:translateX(-50%)}
+
+/* login */
+.login{position:fixed;inset:0;z-index:60;background:var(--blue-dark);display:grid;place-items:center;padding:1rem}
+.login .box{background:var(--surface);border-radius:var(--radius);padding:2rem;width:min(400px,100%);box-shadow:0 30px 60px -20px rgba(0,0,0,.6);border-top:6px solid var(--orange)}
+.login .brand{display:flex;align-items:center;gap:.7rem;margin-bottom:1.2rem}
+.login .brand svg{width:40px;height:40px}
+.login .brand b{font-family:"Montserrat",sans-serif;font-weight:800;color:var(--head);display:block}
+.login .brand small{color:var(--muted);font-size:.75rem}
+.login p{color:var(--muted);font-size:.85rem;margin-bottom:1rem}
+
+/* integrations */
+.integ{display:grid;grid-template-columns:auto 1fr auto;gap:.9rem;align-items:center;padding:.9rem;border:1px solid var(--line);border-radius:var(--radius)}
+.integ .logo{width:40px;height:40px;border-radius:8px;display:grid;place-items:center;font-family:"Montserrat",sans-serif;font-weight:800;color:#fff;font-size:.9rem}
+.integ b{display:block;color:var(--head)}
+.integ span{color:var(--muted);font-size:.8rem}
+
+@media (max-width:900px){
+  .app{grid-template-columns:1fr;background:var(--bg)}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;z-index:45;transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:none}
+  .menu-btn{display:grid}
+  .topbar{padding:.6rem 1rem;flex-wrap:wrap}
+  .topbar .search{order:5;flex-basis:100%;max-width:none}
+  .content{padding:1rem}
+  .tbl-wrap{margin:0 -1.2rem;padding:0 1.2rem}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="ic-grid" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></symbol>
+<symbol id="ic-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3 10h18M8 3v4M16 3v4"/></symbol>
+<symbol id="ic-wrench" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a4 4 0 0 0 5.2 5.2L21 12.6a6 6 0 0 1-7.8 7.8L4 11.2 2.4 3.4 4.8 1 12.6 2.6z"/></symbol>
+<symbol id="ic-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M2 21c0-4 3-7 7-7s7 3 7 7M16 4a4 4 0 0 1 0 8M22 21c0-3-1.5-5.5-4-6.5"/></symbol>
+<symbol id="ic-doc" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M6 2h9l5 5v15H6z"/><path fill="none" stroke="currentColor" stroke-width="2" d="M14 2v6h6M9 13h6M9 17h6"/></symbol>
+<symbol id="ic-dollar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M15 9.5c0-1.4-1.3-2.5-3-2.5s-3 1-3 2.5 1.3 2.2 3 2.5 3 1.1 3 2.5-1.3 2.5-3 2.5-3-1.1-3-2.5M12 5.5v13"/></symbol>
+<symbol id="ic-badge" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="m8.5 14-1.5 8 5-3 5 3-1.5-8"/></symbol>
+<symbol id="ic-truck" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M2 6h12v10H2zM14 10h4l4 4v2h-8z"/><circle cx="6" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+<symbol id="ic-box" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10"/></symbol>
+<symbol id="ic-chart" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 20h16M7 16v-5M12 16V6M17 16v-8"/></symbol>
+<symbol id="ic-cog" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+<symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m20 20-4-4"/></symbol>
+<symbol id="ic-bell" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M10 21h4"/></symbol>
+<symbol id="ic-plus" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M12 5v14M5 12h14"/></symbol>
+<symbol id="ic-x" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="ic-menu" viewBox="0 0 24 24"><path stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="ic-warn" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 3 2 21h20z"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 10v5M12 18h0"/></symbol>
+<symbol id="ic-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 11v6M12 7.5h0"/></symbol>
+<symbol id="ic-phone" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7A2 2 0 0 1 22 16.9z"/></symbol>
+<symbol id="ic-up" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M12 19V5M6 11l6-6 6 6"/></symbol>
+<symbol id="ic-down" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M6 13l6 6 6-6"/></symbol>
+<symbol id="ic-logout" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M10 4H5v16h5M14 8l4 4-4 4M8 12h10"/></symbol>
+</defs></svg>
+
+<!-- LOGIN (demo gate; real auth arrives with Supabase) -->
+<div class="login" id="login">
+  <div class="box">
+    <div class="brand">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="6" fill="#0F3B75"/><rect x="6" y="16" width="28" height="8" rx="2" fill="#F26A21"/><rect x="12" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="22" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="17" y="6" width="6" height="28" rx="1.5" fill="#fff"/></svg>
+      <div><b>Porter &amp; Co. Plumbing</b><small>Office admin</small></div>
+    </div>
+    <p>Demo sign-in. Any credentials work until Supabase auth is connected.</p>
+    <form class="f" onsubmit="event.preventDefault();signIn()">
+      <label>Email<input id="l-email" type="email" value="matt@porterandcoplumbing.com" autocomplete="username"></label>
+      <label>Password<input id="l-pass" type="password" value="demo-password" autocomplete="current-password"></label>
+      <button class="btn btn-cta" type="submit" style="margin-top:.3rem">Sign in</button>
+    </form>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <a class="sb-brand" href="#dashboard">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="6" fill="#1B57A6"/><rect x="6" y="16" width="28" height="8" rx="2" fill="#F26A21"/><rect x="12" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="22" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="17" y="6" width="6" height="28" rx="1.5" fill="#fff"/></svg>
+      <span><b>Porter &amp; Co.</b><small>Office admin</small></span>
+    </a>
+    <div class="sb-sec">Operations</div>
+    <div class="sb-nav" id="nav-ops"></div>
+    <div class="sb-sec">Money</div>
+    <div class="sb-nav" id="nav-money"></div>
+    <div class="sb-sec">Company</div>
+    <div class="sb-nav" id="nav-co"></div>
+    <div class="sb-foot">
+      <span class="demo">Demo data</span><br>
+      <a href="../" target="_blank" rel="noopener">View public site →</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="iconbtn menu-btn" aria-label="Menu" onclick="document.getElementById('sidebar').classList.toggle('open')"><svg><use href="#ic-menu"/></svg></button>
+      <div><h1 id="page-title">Dashboard</h1><div class="sub" id="page-sub"></div></div>
+      <label class="search"><svg><use href="#ic-search"/></svg><input id="global-q" placeholder="Search customers, jobs, invoices…" oninput="globalSearch(this.value)"></label>
+      <div class="tb-right">
+        <button class="btn btn-cta" onclick="openModal('job')"><svg><use href="#ic-plus"/></svg>New Job</button>
+        <button class="iconbtn" aria-label="Notifications" onclick="go('dashboard')"><svg><use href="#ic-bell"/></svg><span class="dot"></span></button>
+        <div class="avatar" title="Matt Porter">MP</div>
+      </div>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+<aside class="drawer" id="drawer" aria-label="Details"></aside>
+<div class="modal" id="modal"><div class="box" id="modal-box"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ MOCK DATA ============ */
+const TODAY = new Date(2026, 8, 18); // Fri Sep 18, 2026
+const fmt$ = n => (n<0?'-':'') + '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});
+const fmt$c = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const d = (m,day,y=2026) => new Date(y,m-1,day);
+const fmtD = dt => dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+const fmtDY = dt => dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+const iso = dt => dt.toISOString().slice(0,10);
+const days = (a,b) => Math.round((b-a)/86400000);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const TECH_COLORS = {MP:'#1B57A6', JR:'#1baf7a', DC:'#eda100'};
+const staff = [
+  {id:'MP', name:'Matt Porter', role:'Owner · Master Plumber', phone:'918-265-4033', email:'matt@porterandcoplumbing.com', status:'On job', license:'OK #00200229', licExp:d(6,30,2027), certs:[{n:'Rinnai Tankless Installer',exp:d(3,15,2027)},{n:'Navien NPE Certified',exp:d(11,1,2026)},{n:'OK Gas Fitter',exp:d(6,30,2027)}], hours:38.5, jobsWeek:11, revMonth:18420, pay:'Owner', hired:d(1,1,2019)},
+  {id:'JR', name:'Jake Reynolds', role:'Journeyman Plumber', phone:'918-555-0147', email:'jake@porterandcoplumbing.com', status:'Available', license:'OK #00214788', licExp:d(10,5,2026), certs:[{n:'Bradford White Installer',exp:d(8,1,2027)},{n:'OSHA 10',exp:d(2,20,2028)}], hours:36, jobsWeek:9, revMonth:12960, pay:'$34.00/hr', hired:d(4,12,2023)},
+  {id:'DC', name:'Danny Cruz', role:'Apprentice Plumber', phone:'918-555-0192', email:'danny@porterandcoplumbing.com', status:'On job', license:'Apprentice #A-77102', licExp:d(12,31,2026), certs:[{n:'OSHA 10',exp:d(5,3,2028)}], hours:40, jobsWeek:8, revMonth:5210, pay:'$21.50/hr', hired:d(2,3,2025)},
+  {id:'KW', name:'Karen Whitlow', role:'Office Manager', phone:'918-555-0128', email:'office@porterandcoplumbing.com', status:'In office', license:'—', licExp:null, certs:[], hours:32, jobsWeek:0, revMonth:0, pay:'$24.00/hr', hired:d(8,15,2022)},
+];
+const techs = staff.filter(s=>s.id!=='KW');
+
+const customers = [
+  {id:'C001', name:'Amy Hendricks', phone:'918-555-0101', email:'amy.h@example.com', addr:'4412 S Evanston Ave', city:'Tulsa', zip:'74105', since:d(3,2,2023), ltv:6840, balance:0, notes:'Prefers text. Gate code 4471.', equipment:[{type:'Tankless water heater', model:'Rinnai RU199iN', serial:'RU19-8842-Q', installed:d(3,2,2023), warranty:d(3,2,2035), lastService:d(3,10,2026)}]},
+  {id:'C002', name:'Mark Rutledge', phone:'918-555-0114', email:'mrutledge@example.com', addr:'2107 E 38th St', city:'Tulsa', zip:'74105', since:d(7,19,2024), ltv:4550, balance:0, notes:'', equipment:[{type:'Tankless water heater', model:'Navien NPE-240A2', serial:'NPE2-11930', installed:d(7,19,2024), warranty:d(7,19,2039), lastService:d(7,22,2025)}]},
+  {id:'C003', name:'Oscar Villanueva', phone:'918-555-0133', email:'oscar.v@example.com', addr:'1815 W 51st St', city:'Tulsa', zip:'74107', since:d(11,4,2022), ltv:3120, balance:0, notes:'Repeat customer. Dog in backyard.', equipment:[{type:'Tank water heater', model:'Bradford White RG250T6N', serial:'BW-KC22-7731', installed:d(11,4,2022), warranty:d(11,4,2028), lastService:null}]},
+  {id:'C004', name:'Dona Garrison', phone:'918-555-0156', email:'dgarrison@example.com', addr:'9024 E 71st Pl', city:'Tulsa', zip:'74133', since:d(8,28,2026), ltv:1650, balance:1650, notes:'Invoice mailed 8/29.', equipment:[{type:'Tank water heater', model:'Rheem XG50T12', serial:'RH-0926-4402', installed:d(8,28,2026), warranty:d(8,28,2032), lastService:null}]},
+  {id:'C005', name:'Leah Sandoval', phone:'918-555-0171', email:'leah.s@example.com', addr:'300 W Dallas St', city:'Broken Arrow', zip:'74012', since:d(9,3,2026), ltv:385, balance:385, notes:'', equipment:[]},
+  {id:'C006', name:'Tom & Priya Bakshi', phone:'918-555-0188', email:'bakshi.home@example.com', addr:'11511 S Yale Ave', city:'Tulsa', zip:'74137', since:d(2,14,2025), ltv:5320, balance:2140, notes:'Tankless conversion in progress.', equipment:[{type:'Tankless water heater', model:'Rinnai RSC199iN', serial:'RSC-3391-A', installed:d(9,15,2026), warranty:d(9,15,2038), lastService:null}]},
+  {id:'C007', name:'Gerald Pruitt', phone:'918-555-0109', email:'gpruitt@example.com', addr:'611 N Adams Rd', city:'Sand Springs', zip:'74063', since:d(5,6,2024), ltv:2890, balance:0, notes:'', equipment:[{type:'Tank water heater', model:'A.O. Smith GCR-40', serial:'AOS-2405-8811', installed:d(5,6,2024), warranty:d(5,6,2030), lastService:null}]},
+  {id:'C008', name:'Renee Okafor', phone:'918-555-0162', email:'renee.o@example.com', addr:'1508 W Main St', city:'Jenks', zip:'74037', since:d(9,10,2026), ltv:0, balance:0, notes:'Estimate sent for tankless.', equipment:[]},
+  {id:'C009', name:'Bill Hargrove', phone:'918-555-0140', email:'bhargrove@example.com', addr:'7720 E 106th St', city:'Bixby', zip:'74008', since:d(1,22,2024), ltv:1975, balance:975, notes:'Slow payer. Call before invoicing.', equipment:[]},
+  {id:'C010', name:'Silverleaf Property Mgmt', phone:'918-555-0180', email:'maint@silverleafpm.example.com', addr:'5555 S Lewis Ave Ste 200', city:'Tulsa', zip:'74105', since:d(6,1,2023), ltv:14870, balance:3420, notes:'Net 30. PO required on every invoice.', equipment:[{type:'Tank water heater', model:'Bradford White RG240T6N (x4 units)', serial:'various', installed:d(6,1,2023), warranty:d(6,1,2029), lastService:null}]},
+  {id:'C011', name:'Carla Nguyen', phone:'918-555-0195', email:'carla.n@example.com', addr:'2213 E 9th St', city:'Owasso', zip:'74055', since:d(9,16,2026), ltv:0, balance:0, notes:'', equipment:[]},
+  {id:'C012', name:'Dale Whitcomb', phone:'918-555-0123', email:'dwhitcomb@example.com', addr:'1440 S Hickory St', city:'Sapulpa', zip:'74066', since:d(10,9,2025), ltv:820, balance:0, notes:'', equipment:[]},
+];
+const cust = id => customers.find(c=>c.id===id);
+
+let jobs = [
+  {id:'J-1041', date:d(9,14), start:'8:00', end:'10:00', cust:'C003', service:'Water heater flush & inspection', type:'Water heater', tech:'JR', status:'Complete', amount:145},
+  {id:'J-1042', date:d(9,14), start:'10:30', end:'1:00', cust:'C009', service:'Kitchen faucet replacement', type:'Fixtures', tech:'DC', status:'Complete', amount:410},
+  {id:'J-1043', date:d(9,15), start:'8:00', end:'4:00', cust:'C006', service:'Tank to tankless conversion (Rinnai RSC199iN)', type:'Tankless', tech:'MP', status:'Complete', amount:4280},
+  {id:'J-1044', date:d(9,15), start:'9:00', end:'11:00', cust:'C007', service:'Running toilet repair, 2 baths', type:'Fixtures', tech:'JR', status:'Complete', amount:260},
+  {id:'J-1045', date:d(9,16), start:'8:30', end:'10:30', cust:'C011', service:'Leak under kitchen sink', type:'Leak repair', tech:'JR', status:'Complete', amount:285},
+  {id:'J-1046', date:d(9,16), start:'1:00', end:'3:00', cust:'C010', service:'Unit 12B: shower valve replacement', type:'Fixtures', tech:'DC', status:'Complete', amount:520},
+  {id:'J-1047', date:d(9,17), start:'8:00', end:'12:00', cust:'C010', service:'Unit 4A: 40-gal tank replacement', type:'Water heater', tech:'MP', status:'Complete', amount:1725},
+  {id:'J-1048', date:d(9,17), start:'2:00', end:'4:00', cust:'C012', service:'Hose bib replacement', type:'Fixtures', tech:'DC', status:'Complete', amount:195},
+  {id:'J-1049', date:d(9,18), start:'8:00', end:'10:00', cust:'C001', service:'Annual tankless descaling', type:'Tankless', tech:'JR', status:'Complete', amount:189},
+  {id:'J-1050', date:d(9,18), start:'9:00', end:'1:00', cust:'C004', service:'Gas line for new range', type:'Gas', tech:'MP', status:'In progress', amount:890},
+  {id:'J-1051', date:d(9,18), start:'11:00', end:'12:30', cust:'C002', service:'Pressure regulator replacement', type:'Upgrades', tech:'JR', status:'En route', amount:465},
+  {id:'J-1052', date:d(9,18), start:'1:30', end:'3:30', cust:'C009', service:'Slow bathroom drain', type:'Drains', tech:'DC', status:'Scheduled', amount:225},
+  {id:'J-1053', date:d(9,18), start:'2:00', end:'4:00', cust:'C005', service:'Garbage disposal install', type:'Fixtures', tech:'JR', status:'Scheduled', amount:340},
+  {id:'J-1054', date:d(9,19), start:'8:00', end:'12:00', cust:'C007', service:'50-gal tank replacement (Rheem)', type:'Water heater', tech:'MP', status:'Scheduled', amount:1690},
+  {id:'J-1055', date:d(9,19), start:'9:00', end:'11:00', cust:'C012', service:'Pre-purchase plumbing inspection', type:'Inspection', tech:'JR', status:'Scheduled', amount:175},
+  {id:'J-1056', date:d(9,19), start:'1:00', end:'3:00', cust:'C003', service:'Main shut-off valve replacement', type:'Upgrades', tech:'DC', status:'Scheduled', amount:395},
+  {id:'J-1057', date:d(9,21), start:'8:00', end:'4:00', cust:'C008', service:'Tankless install (Navien NPE-240A2)', type:'Tankless', tech:'MP', status:'Scheduled', amount:4650},
+  {id:'J-1058', date:d(9,21), start:'10:00', end:'12:00', cust:'C010', service:'Unit 7C: leak at water heater', type:'Leak repair', tech:'JR', status:'Scheduled', amount:0},
+  {id:'J-1059', date:d(9,22), start:'8:30', end:'10:30', cust:'C011', service:'Shower valve replacement', type:'Fixtures', tech:'DC', status:'Scheduled', amount:480},
+  {id:'J-1060', date:d(9,23), start:'8:00', end:'11:00', cust:'C009', service:'Expansion tank + PRV', type:'Upgrades', tech:'JR', status:'Scheduled', amount:610},
+  {id:'J-1061', date:d(9,24), start:'9:00', end:'12:00', cust:'C001', service:'Outdoor gas line for grill', type:'Gas', tech:'MP', status:'Scheduled', amount:720},
+];
+
+let estimates = [
+  {id:'E-2231', date:d(9,10), cust:'C008', desc:'Tankless conversion, Navien NPE-240A2, venting + gas resize', amount:4650, status:'Approved', tech:'MP'},
+  {id:'E-2232', date:d(9,11), cust:'C010', desc:'Replace 3 remaining 40-gal units, building B', amount:4980, status:'Sent', tech:'MP'},
+  {id:'E-2233', date:d(9,12), cust:'C011', desc:'Shower valve + trim replacement', amount:480, status:'Approved', tech:'DC'},
+  {id:'E-2234', date:d(9,14), cust:'C009', desc:'Expansion tank and pressure reducing valve', amount:610, status:'Approved', tech:'JR'},
+  {id:'E-2235', date:d(9,15), cust:'C005', desc:'Whole-house repipe, PEX, 2 bath', amount:8900, status:'Viewed', tech:'MP'},
+  {id:'E-2236', date:d(9,16), cust:'C012', desc:'Water softener install', amount:2150, status:'Sent', tech:'JR'},
+  {id:'E-2237', date:d(9,17), cust:'C002', desc:'Recirculation pump for tankless', amount:1120, status:'Viewed', tech:'MP'},
+  {id:'E-2238', date:d(9,8), cust:'C007', desc:'Tankless conversion', amount:4400, status:'Declined', tech:'MP'},
+  {id:'E-2239', date:d(9,17), cust:'C004', desc:'Gas line for outdoor fire pit', amount:780, status:'Draft', tech:'MP'},
+];
+
+let invoices = [
+  {id:'INV-3101', date:d(7,22), due:d(8,21), cust:'C002', desc:'Tankless annual service', amount:189, paid:189},
+  {id:'INV-3108', date:d(8,4), due:d(9,3), cust:'C009', desc:'Toilet rebuild x2', amount:975, paid:0},
+  {id:'INV-3110', date:d(8,12), due:d(9,11), cust:'C010', desc:'Units 2A, 5B water heater replacements (PO 4471)', amount:3420, paid:0},
+  {id:'INV-3114', date:d(8,28), due:d(9,27), cust:'C004', desc:'50-gal tank replacement (Rheem XG50T12)', amount:1650, paid:0},
+  {id:'INV-3117', date:d(9,3), due:d(10,3), cust:'C005', desc:'Leak repair, laundry supply line', amount:385, paid:0},
+  {id:'INV-3119', date:d(9,8), due:d(9,8), cust:'C012', desc:'Hose bib and angle stops', amount:320, paid:320},
+  {id:'INV-3121', date:d(9,14), due:d(9,14), cust:'C003', desc:'Water heater flush & inspection', amount:145, paid:145},
+  {id:'INV-3122', date:d(9,14), due:d(9,14), cust:'C009', desc:'Kitchen faucet replacement', amount:410, paid:410},
+  {id:'INV-3123', date:d(9,15), due:d(10,15), cust:'C006', desc:'Tank to tankless conversion, Rinnai RSC199iN', amount:4280, paid:2140},
+  {id:'INV-3124', date:d(9,15), due:d(9,15), cust:'C007', desc:'Running toilet repair, 2 baths', amount:260, paid:260},
+  {id:'INV-3125', date:d(9,16), due:d(9,16), cust:'C011', desc:'Leak under kitchen sink', amount:285, paid:285},
+  {id:'INV-3126', date:d(9,16), due:d(10,16), cust:'C010', desc:'Unit 12B shower valve (PO 4490)', amount:520, paid:0},
+  {id:'INV-3127', date:d(9,17), due:d(10,17), cust:'C010', desc:'Unit 4A 40-gal tank replacement (PO 4492)', amount:1725, paid:0},
+  {id:'INV-3128', date:d(9,17), due:d(9,17), cust:'C012', desc:'Hose bib replacement', amount:195, paid:195},
+  {id:'INV-3129', date:d(9,18), due:d(9,18), cust:'C001', desc:'Annual tankless descaling', amount:189, paid:0},
+];
+function invStatus(i){
+  const bal = i.amount - i.paid;
+  if(bal<=0) return 'Paid';
+  if(i.paid>0 && days(i.due,TODAY)<=0) return 'Partial';
+  if(days(i.due,TODAY)>0) return 'Overdue';
+  return 'Due';
+}
+function agingBucket(i){
+  const late = days(i.due,TODAY);
+  if(late<=0) return 'Current';
+  if(late<=30) return '1–30';
+  if(late<=60) return '31–60';
+  if(late<=90) return '61–90';
+  return '90+';
+}
+
+const vehicles = [
+  {id:'V1', name:'Van 1 · 2022 Ford Transit 250', plate:'OK 4KT-882', driver:'MP', miles:48210, nextService:49000, nextServiceType:'Oil + rotate', reg:d(3,31,2027), ins:d(1,15,2027), status:'In service'},
+  {id:'V2', name:'Van 2 · 2019 Ram ProMaster 1500', plate:'OK 7RC-310', driver:'JR', miles:96540, nextService:96500, nextServiceType:'Brakes + oil', reg:d(10,31,2026), ins:d(1,15,2027), status:'Service due'},
+  {id:'V3', name:'Truck · 2017 Chevy Silverado 2500', plate:'OK 2PL-771', driver:'DC', miles:131800, nextService:135000, nextServiceType:'Oil + transmission', reg:d(11,30,2026), ins:d(1,15,2027), status:'In service'},
+];
+const tools = [
+  {name:'RIDGID SeeSnake camera', tag:'T-01', assigned:'V1', lastService:d(2,10), nextService:d(2,10,2027), status:'OK'},
+  {name:'RIDGID K-60 sectional machine', tag:'T-02', assigned:'V2', lastService:d(6,4), nextService:d(12,4), status:'OK'},
+  {name:'Milwaukee M18 Force Logic press tool', tag:'T-03', assigned:'V1', lastService:d(9,1,2025), nextService:d(9,1), status:'Calibration overdue'},
+  {name:'RIDGID 700 power threader', tag:'T-04', assigned:'V3', lastService:d(4,20), nextService:d(4,20,2027), status:'OK'},
+  {name:'Spartan 727 jetter', tag:'T-05', assigned:'Shop', lastService:d(8,15), nextService:d(2,15,2027), status:'OK'},
+  {name:'Gas leak detector (Bacharach)', tag:'T-06', assigned:'V1', lastService:d(9,30,2025), nextService:d(9,30), status:'Calibration due'},
+  {name:'Combustion analyzer (Testo 310)', tag:'T-07', assigned:'V1', lastService:d(11,2,2025), nextService:d(11,2), status:'OK'},
+];
+const inventory = [
+  {sku:'WH-RH-50G', name:'Rheem XG50T12 50-gal gas water heater', onHand:2, reorder:2, cost:689, loc:'Shop'},
+  {sku:'WH-BW-40G', name:'Bradford White RG240T6N 40-gal gas', onHand:1, reorder:2, cost:742, loc:'Shop'},
+  {sku:'WH-RI-RU199', name:'Rinnai RU199iN tankless', onHand:1, reorder:1, cost:1385, loc:'Shop'},
+  {sku:'WH-NV-240', name:'Navien NPE-240A2 tankless', onHand:0, reorder:1, cost:1290, loc:'Shop'},
+  {sku:'PT-EXP-2', name:'Expansion tank, 2 gal', onHand:6, reorder:4, cost:38, loc:'Van 1'},
+  {sku:'PT-PRV-34', name:'Pressure reducing valve, 3/4"', onHand:3, reorder:3, cost:64, loc:'Van 1'},
+  {sku:'PT-BALL-34', name:'Ball valve, 3/4" full port', onHand:14, reorder:10, cost:12, loc:'Van 2'},
+  {sku:'PT-FLEX-18', name:'Water heater flex connector, 18"', onHand:5, reorder:8, cost:9, loc:'Shop'},
+  {sku:'PT-GASFLX', name:'Gas flex connector, 3/4" x 24"', onHand:4, reorder:6, cost:17, loc:'Van 1'},
+  {sku:'PT-PEX-34', name:'PEX-A 3/4" (100 ft coil)', onHand:3, reorder:2, cost:58, loc:'Shop'},
+  {sku:'PT-FILL-TOI', name:'Toilet fill valve, Fluidmaster 400', onHand:9, reorder:6, cost:8, loc:'Van 2'},
+  {sku:'PT-DISP-12', name:'Garbage disposal, 1/2 HP', onHand:1, reorder:2, cost:96, loc:'Shop'},
+  {sku:'CH-DESCALE', name:'Tankless descaler solution, 1 gal', onHand:2, reorder:3, cost:29, loc:'Van 2'},
+];
+
+// weekly revenue, last 12 weeks ending this week (collected)
+const weeklyRev = [
+  {wk:'Jun 29', v:7420},{wk:'Jul 6', v:9180},{wk:'Jul 13', v:6350},{wk:'Jul 20', v:11240},
+  {wk:'Jul 27', v:8710},{wk:'Aug 3', v:9960},{wk:'Aug 10', v:12480},{wk:'Aug 17', v:7830},
+  {wk:'Aug 24', v:10520},{wk:'Aug 31', v:8140},{wk:'Sep 7', v:11710},{wk:'Sep 14', v:9105},
+];
+const monthlyRev = [
+  {m:'Oct', v:31200},{m:'Nov', v:28950},{m:'Dec', v:24100},{m:'Jan', v:35800},{m:'Feb', v:29400},{m:'Mar', v:33750},
+  {m:'Apr', v:30100},{m:'May', v:34900},{m:'Jun', v:38200},{m:'Jul', v:41500},{m:'Aug', v:40860},{m:'Sep', v:26180},
+];
+const revByService = [
+  {k:'Water heaters (tank)', v:14930},{k:'Tankless', v:11290},{k:'Fixtures & toilets', v:4880},{k:'Gas lines', v:3210},{k:'Leak repair', v:2710},{k:'Drains', v:1490},{k:'Inspections & upgrades', v:2080},
+];
+
+/* ============ HELPERS ============ */
+const nav = [
+  {id:'dashboard', label:'Dashboard', icon:'ic-grid', group:'ops'},
+  {id:'schedule', label:'Schedule', icon:'ic-cal', group:'ops'},
+  {id:'jobs', label:'Jobs', icon:'ic-wrench', group:'ops', count:()=>jobs.filter(j=>iso(j.date)===iso(TODAY)&&j.status!=='Complete').length},
+  {id:'customers', label:'Customers', icon:'ic-users', group:'ops'},
+  {id:'estimates', label:'Estimates', icon:'ic-doc', group:'money', count:()=>estimates.filter(e=>['Sent','Viewed'].includes(e.status)).length},
+  {id:'invoices', label:'Invoices & A/R', icon:'ic-dollar', group:'money', count:()=>invoices.filter(i=>invStatus(i)==='Overdue').length},
+  {id:'reports', label:'Reports', icon:'ic-chart', group:'money'},
+  {id:'staff', label:'Staff', icon:'ic-badge', group:'co'},
+  {id:'equipment', label:'Equipment & Fleet', icon:'ic-truck', group:'co'},
+  {id:'inventory', label:'Inventory', icon:'ic-box', group:'co'},
+  {id:'settings', label:'Settings', icon:'ic-cog', group:'co'},
+];
+function renderNav(){
+  const cur = location.hash.replace('#','')||'dashboard';
+  for(const g of ['ops','money','co']){
+    document.getElementById('nav-'+g).innerHTML = nav.filter(n=>n.group===g).map(n=>{
+      const c = n.count ? n.count() : 0;
+      return `<button class="${n.id===cur?'active':''}" onclick="go('${n.id}')"><svg><use href="#${n.icon}"/></svg>${n.label}${c?`<span class="cnt">${c}</span>`:''}</button>`;
+    }).join('');
+  }
+}
+function go(id){ location.hash = id; }
+function statusPill(s){
+  const map = {Complete:'p-good', Paid:'p-good', Approved:'p-good', OK:'p-good', 'In service':'p-good', Available:'p-good', 'In office':'p-good',
+    'In progress':'p-info', 'En route':'p-info', Scheduled:'p-neutral', Sent:'p-info', Viewed:'p-info', Draft:'p-neutral', Due:'p-neutral', 'On job':'p-info',
+    Partial:'p-warn', 'Service due':'p-warn', 'Calibration due':'p-warn', Overdue:'p-crit', Declined:'p-crit', 'Calibration overdue':'p-crit', Cancelled:'p-crit'};
+  return `<span class="pill ${map[s]||'p-neutral'}">${s}</span>`;
+}
+function techName(id){ const t=staff.find(s=>s.id===id); return t?t.name:id; }
+function techTag(id){ return `<span class="tech-dot" style="background:${TECH_COLORS[id]||'#888'}"></span>${techName(id).split(' ')[0]}`; }
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2600); }
+function closeAll(){ document.getElementById('overlay').classList.remove('show'); document.getElementById('drawer').classList.remove('show'); document.getElementById('modal').classList.remove('show'); document.getElementById('sidebar').classList.remove('open'); }
+function openDrawer(html){ document.getElementById('drawer').innerHTML = `<button class="iconbtn close" aria-label="Close" onclick="closeAll()"><svg><use href="#ic-x"/></svg></button>`+html; document.getElementById('overlay').classList.add('show'); document.getElementById('drawer').classList.add('show'); }
+function signIn(){ document.getElementById('login').hidden = true; try{sessionStorage.setItem('porter-admin-demo','1')}catch(e){} }
+
+/* charts */
+function columnChart(el, data, {key='v', label='wk', money=true, highlightLast=true, h=220}={}){
+  const w = 720, padL = 48, padR = 8, padT = 12, padB = 28;
+  const max = Math.max(...data.map(x=>x[key]));
+  const step = niceStep(max);
+  const top = Math.ceil(max/step)*step;
+  const iw = w-padL-padR, ih = h-padT-padB;
+  const bw = Math.min(24, iw/data.length*0.6);
+  const y = v => padT + ih - (v/top)*ih;
+  let s = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Column chart">`;
+  for(let v=0; v<=top; v+=step){
+    s += `<line x1="${padL}" x2="${w-padR}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)" stroke-width="1"/>`;
+    s += `<text x="${padL-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--faint)" font-family="Open Sans,sans-serif">${money?compact$(v):v}</text>`;
+  }
+  data.forEach((pt,i)=>{
+    const cx = padL + (i+0.5)*(iw/data.length);
+    const x = cx - bw/2, yy = y(pt[key]), hh = padT+ih-yy;
+    const last = highlightLast && i===data.length-1;
+    s += `<path d="M${x} ${padT+ih} v${-(hh-4)} a4 4 0 0 1 4 -4 h${bw-8} a4 4 0 0 1 4 4 v${hh-4} z" fill="${last?'var(--s2)':'var(--s1)'}" data-i="${i}" class="bar"/>`;
+    s += `<rect x="${cx-iw/data.length/2}" y="${padT}" width="${iw/data.length}" height="${ih}" fill="transparent" data-i="${i}" class="hit"/>`;
+    if(i%Math.ceil(data.length/12)===0) s += `<text x="${cx}" y="${h-8}" text-anchor="middle" font-size="11" fill="var(--faint)" font-family="Open Sans,sans-serif">${pt[label]}</text>`;
+  });
+  s += `<line x1="${padL}" x2="${w-padR}" y1="${padT+ih}" y2="${padT+ih}" stroke="var(--axis)"/></svg><div class="tip"></div>`;
+  el.innerHTML = s;
+  const tip = el.querySelector('.tip'), svg = el.querySelector('svg');
+  el.querySelectorAll('.hit').forEach(r=>{
+    r.addEventListener('mousemove', e=>{
+      const i=+r.dataset.i, pt=data[i]; const rect=el.getBoundingClientRect();
+      tip.textContent = `${pt[label]}: ${money?fmt$(pt[key]):pt[key]}`;
+      tip.style.left = (e.clientX-rect.left)+'px'; tip.style.top = (e.clientY-rect.top)+'px'; tip.classList.add('show');
+    });
+    r.addEventListener('mouseleave', ()=>tip.classList.remove('show'));
+  });
+}
+function niceStep(max){ const raw=max/4; const p=Math.pow(10,Math.floor(Math.log10(raw))); const n=raw/p; return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p; }
+function compact$(v){ return v>=1000000?'$'+(v/1e6).toFixed(1)+'M':v>=1000?'$'+Math.round(v/1000)+'K':'$'+v; }
+function sparkline(vals, w=120, h=32){
+  const max=Math.max(...vals), min=Math.min(...vals);
+  const pts = vals.map((v,i)=>[i*(w/(vals.length-1)), h-2-((v-min)/((max-min)||1))*(h-4)]);
+  const dstr = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const last = pts[pts.length-1];
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><path d="${dstr}" fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".55"/><circle cx="${last[0]}" cy="${last[1]}" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/></svg>`;
+}
+function hbars(rows, {money=true}={}){
+  const max = Math.max(...rows.map(r=>r.v));
+  return rows.map(r=>`<div class="hbar-row"><span>${esc(r.k)}</span><div class="track"><div class="fill" style="width:${(r.v/max*100).toFixed(1)}%"></div></div><span class="v num">${money?fmt$(r.v):r.v}</span></div>`).join('');
+}
+function agingChart(){
+  const buckets = ['Current','1–30','31–60','61–90','90+'];
+  const totals = Object.fromEntries(buckets.map(b=>[b,0]));
+  invoices.filter(i=>invStatus(i)!=='Paid').forEach(i=>totals[agingBucket(i)] += i.amount-i.paid);
+  const max = Math.max(...Object.values(totals),1);
+  return `<div class="list" style="gap:.35rem">${buckets.map((b,i)=>`<div class="hbar-row"><span>${b}${i?' days':''}</span><div class="track"><div class="fill" style="width:${(totals[b]/max*100).toFixed(1)}%;background:${i===0?'var(--s1)':i<3?'var(--warn)':'var(--crit)'}"></div></div><span class="v num">${fmt$(totals[b])}</span></div>`).join('')}</div>`;
+}
+
+/* ============ VIEWS ============ */
+const views = {};
+function setTitle(t, sub=''){ document.getElementById('page-title').textContent=t; document.getElementById('page-sub').textContent=sub; }
+
+views.dashboard = () => {
+  setTitle('Dashboard', 'Friday, September 18, 2026');
+  const mtd = monthlyRev[11].v, lastMtd = 22940;
+  const ar = invoices.reduce((s,i)=>s+(i.amount-i.paid),0);
+  const overdue = invoices.filter(i=>invStatus(i)==='Overdue');
+  const overdueAmt = overdue.reduce((s,i)=>s+(i.amount-i.paid),0);
+  const openEst = estimates.filter(e=>['Sent','Viewed'].includes(e.status));
+  const weekJobs = jobs.filter(j=>days(d(9,14),j.date)>=0 && days(j.date,d(9,19))>=0);
+  const todays = jobs.filter(j=>iso(j.date)===iso(TODAY)).sort((a,b)=>tmin(a.start)-tmin(b.start));
+  const alerts = [];
+  overdue.forEach(i=>alerts.push({lvl:'crit', icon:'ic-warn', text:`<b>${i.id}</b> · ${esc(cust(i.cust).name)} is ${days(i.due,TODAY)} days overdue (${fmt$(i.amount-i.paid)})`, act:`<button class="btn-link" onclick="go('invoices')">Open</button>`}));
+  tools.filter(t=>t.status!=='OK').forEach(t=>alerts.push({lvl:t.status.includes('overdue')?'crit':'warn', icon:'ic-wrench', text:`<b>${esc(t.name)}</b> · ${t.status.toLowerCase()} (${fmtD(t.nextService)})`, act:`<button class="btn-link" onclick="go('equipment')">Open</button>`}));
+  vehicles.filter(v=>v.status!=='In service').forEach(v=>alerts.push({lvl:'warn', icon:'ic-truck', text:`<b>${esc(v.name.split(' · ')[0])}</b> · ${v.nextServiceType.toLowerCase()} due at ${v.nextService.toLocaleString()} mi (now ${v.miles.toLocaleString()})`, act:`<button class="btn-link" onclick="go('equipment')">Open</button>`}));
+  inventory.filter(p=>p.onHand<p.reorder).forEach(p=>alerts.push({lvl:'warn', icon:'ic-box', text:`<b>${esc(p.name)}</b> · ${p.onHand} on hand, reorder at ${p.reorder}`, act:`<button class="btn-link" onclick="go('inventory')">Open</button>`}));
+  staff.forEach(s=>{ if(s.licExp && days(TODAY,s.licExp)<45) alerts.push({lvl:'warn', icon:'ic-badge', text:`<b>${esc(s.name)}</b> · license ${s.license} expires ${fmtD(s.licExp)}`, act:`<button class="btn-link" onclick="go('staff')">Open</button>`}); s.certs.forEach(c=>{ if(days(TODAY,c.exp)<60) alerts.push({lvl:'info', icon:'ic-info', text:`<b>${esc(s.name)}</b> · ${esc(c.n)} expires ${fmtD(c.exp)}`, act:`<button class="btn-link" onclick="go('staff')">Open</button>`}); }); });
+
+  return `
+  <div class="g4">
+    <div class="card stat"><div class="label">Revenue, month to date</div><div class="value num">${fmt$(mtd)}</div><div class="delta up"><svg width="14" height="14"><use href="#ic-up"/></svg>${Math.round((mtd/lastMtd-1)*100)}% vs. same point in August</div><div class="spark">${sparkline(weeklyRev.map(w=>w.v))}</div></div>
+    <div class="card stat"><div class="label">Jobs this week</div><div class="value num">${weekJobs.length}</div><div class="delta">${weekJobs.filter(j=>j.status==='Complete').length} complete · ${weekJobs.filter(j=>j.status!=='Complete').length} remaining · ${fmt$(weekJobs.reduce((s,j)=>s+j.amount,0))} booked</div></div>
+    <div class="card stat"><div class="label">Accounts receivable</div><div class="value num">${fmt$(ar)}</div><div class="delta ${overdueAmt?'down':''}">${overdueAmt?`<svg width="14" height="14"><use href="#ic-warn"/></svg>${fmt$(overdueAmt)} overdue on ${overdue.length} invoice${overdue.length>1?'s':''}`:'Nothing overdue'}</div></div>
+    <div class="card stat"><div class="label">Open estimates</div><div class="value num">${fmt$(openEst.reduce((s,e)=>s+e.amount,0))}</div><div class="delta">${openEst.length} awaiting a decision · ${Math.round(estimates.filter(e=>e.status==='Approved').length/estimates.filter(e=>e.status!=='Draft').length*100)}% approval rate this month</div></div>
+  </div>
+  <div class="g21">
+    <div class="card"><div class="card-h"><div><h2>Revenue collected by week</h2><div class="sub">Last 12 weeks · current week in orange</div></div><button class="btn btn-ghost btn-sm" onclick="go('reports')">Reports</button></div><div class="chart" id="ch-week"></div></div>
+    <div class="card"><div class="card-h"><div><h2>Needs attention</h2><div class="sub">${alerts.length} item${alerts.length!==1?'s':''}</div></div></div><div class="list scroll-list">${alerts.map(a=>`<div class="alert ${a.lvl}"><svg><use href="#${a.icon}"/></svg><span>${a.text}</span>${a.act}</div>`).join('')}</div></div>
+  </div>
+  <div class="g21">
+    <div class="card"><div class="card-h"><div><h2>Today's schedule</h2><div class="sub">${todays.length} jobs · ${techs.length} techs in the field</div></div><button class="btn btn-ghost btn-sm" onclick="go('schedule')">Full schedule</button></div>
+      <div class="list">${todays.map(j=>`<div class="item" onclick="showJob('${j.id}')" style="cursor:pointer"><span class="t num">${j.start}–${j.end}</span><div><b>${esc(cust(j.cust).name)} · ${esc(j.service)}</b><span>${esc(cust(j.cust).addr)}, ${esc(cust(j.cust).city)} · ${techTag(j.tech)}</span></div>${statusPill(j.status)}</div>`).join('')}</div>
+    </div>
+    <div class="card"><div class="card-h"><div><h2>Revenue by service</h2><div class="sub">Month to date</div></div></div>${hbars(revByService)}</div>
+  </div>`;
+};
+function tmin(t){ let [h,m]=t.split(':').map(Number); if(h<7) h+=12; return h*60+m; }
+
+let schedWeekStart = d(9,14); let schedTech = 'all';
+views.schedule = () => {
+  setTitle('Schedule', 'Dispatch board · Monday to Saturday');
+  const daysArr = [0,1,2,3,4,5].map(i=>{ const x=new Date(schedWeekStart); x.setDate(x.getDate()+i); return x; });
+  const end = new Date(schedWeekStart); end.setDate(end.getDate()+5);
+  return `
+  <div class="card">
+    <div class="toolbar">
+      <button class="btn btn-ghost btn-sm" onclick="shiftWeek(-1)">‹ Prev</button>
+      <h2 style="margin:0">${fmtD(schedWeekStart)} – ${fmtDY(end)}</h2>
+      <button class="btn btn-ghost btn-sm" onclick="shiftWeek(1)">Next ›</button>
+      <button class="btn btn-ghost btn-sm" onclick="schedWeekStart=d(9,14);render()">This week</button>
+      <span class="spacer"></span>
+      <div class="chips">${[['all','All techs'],...techs.map(t=>[t.id,t.name.split(' ')[0]])].map(([id,l])=>`<button class="chip ${schedTech===id?'on':''}" onclick="schedTech='${id}';render()">${l}</button>`).join('')}</div>
+      <button class="btn btn-cta btn-sm" onclick="openModal('job')"><svg><use href="#ic-plus"/></svg>Add job</button>
+    </div>
+    <div class="legend" style="margin:.9rem 0 .7rem">${techs.map(t=>`<span><i style="background:${TECH_COLORS[t.id]}"></i>${t.name}</span>`).join('')}</div>
+    <div class="week-wrap"><div class="week">${daysArr.map(day=>{
+      const list = jobs.filter(j=>iso(j.date)===iso(day) && (schedTech==='all'||j.tech===schedTech)).sort((a,b)=>tmin(a.start)-tmin(b.start));
+      const booked = list.reduce((s,j)=>s+j.amount,0);
+      return `<div class="day ${iso(day)===iso(TODAY)?'today':''}"><h4><span>${day.toLocaleDateString('en-US',{weekday:'short'})} <b>${day.getDate()}</b></span><span class="num">${list.length?fmt$(booked):''}</span></h4>${list.map(j=>`<div class="job" style="border-left-color:${TECH_COLORS[j.tech]}" onclick="showJob('${j.id}')"><div class="jt num">${j.start}–${j.end} · ${techName(j.tech).split(' ')[0]}</div><b>${esc(cust(j.cust).name)}</b><span>${esc(j.service)}</span><span>${esc(cust(j.cust).city)} · ${j.status}</span></div>`).join('')||'<div style="color:var(--faint);font-size:.8rem;padding:.4rem .3rem">No jobs</div>'}</div>`;
+    }).join('')}</div></div>
+  </div>
+  <div class="g3">${techs.map(t=>{ const wk=jobs.filter(j=>j.tech===t.id && days(schedWeekStart,j.date)>=0 && days(j.date,end)>=0); const hrs=wk.reduce((s,j)=>s+(tmin(j.end)-tmin(j.start))/60,0); return `<div class="card"><div class="staff"><div class="avatar" style="background:${TECH_COLORS[t.id]}">${t.id}</div><div><h3>${t.name}</h3><div class="role">${t.role}</div><div class="kv"><dt>Jobs this week</dt><dd>${wk.length}</dd><dt>Scheduled hours</dt><dd>${hrs.toFixed(1)} / 40</dd><dt>Booked</dt><dd class="num">${fmt$(wk.reduce((s,j)=>s+j.amount,0))}</dd></div><div class="meter ${hrs>40?'warn':''}" style="margin-top:.6rem"><i style="width:${Math.min(100,hrs/40*100)}%"></i></div></div></div></div>`; }).join('')}</div>`;
+};
+function shiftWeek(n){ const x=new Date(schedWeekStart); x.setDate(x.getDate()+7*n); schedWeekStart=x; render(); }
+
+let jobFilter = 'all', jobQ = '';
+views.jobs = () => {
+  setTitle('Jobs', 'Work orders and job history');
+  const statuses = ['all','Scheduled','En route','In progress','Complete'];
+  const list = jobs.filter(j=>(jobFilter==='all'||j.status===jobFilter) && (!jobQ || (cust(j.cust).name+' '+j.service+' '+j.id).toLowerCase().includes(jobQ))).sort((a,b)=>b.date-a.date||tmin(a.start)-tmin(b.start));
+  return `<div class="card">
+    <div class="toolbar"><div class="chips">${statuses.map(s=>`<button class="chip ${jobFilter===s?'on':''}" onclick="jobFilter='${s}';render()">${s==='all'?'All':s}</button>`).join('')}</div><span class="spacer"></span><label class="search"><svg><use href="#ic-search"/></svg><input placeholder="Search jobs" value="${esc(jobQ)}" oninput="jobQ=this.value.toLowerCase();renderJobsTable()"></label><button class="btn btn-cta btn-sm" onclick="openModal('job')"><svg><use href="#ic-plus"/></svg>New job</button></div>
+    <div class="tbl-wrap" style="margin-top:1rem" id="jobs-table">${jobsTable(list)}</div></div>`;
+};
+function jobsTable(list){
+  return `<table><thead><tr><th>Job</th><th>Date</th><th>Customer</th><th>Service</th><th>Tech</th><th>Status</th><th class="r">Amount</th></tr></thead><tbody>${list.map(j=>`<tr class="click" onclick="showJob('${j.id}')"><td class="name">${j.id}</td><td class="num">${fmtD(j.date)}<span class="sub">${j.start}–${j.end}</span></td><td>${esc(cust(j.cust).name)}<span class="sub">${esc(cust(j.cust).city)}</span></td><td class="wrap">${esc(j.service)}<span class="sub">${j.type}</span></td><td>${techTag(j.tech)}</td><td>${statusPill(j.status)}</td><td class="r num">${j.amount?fmt$(j.amount):'<span class="sub">TBD</span>'}</td></tr>`).join('')}</tbody></table>`;
+}
+function renderJobsTable(){ const list = jobs.filter(j=>(jobFilter==='all'||j.status===jobFilter) && (!jobQ || (cust(j.cust).name+' '+j.service+' '+j.id).toLowerCase().includes(jobQ))).sort((a,b)=>b.date-a.date); document.getElementById('jobs-table').innerHTML = jobsTable(list); }
+function showJob(id){
+  const j = jobs.find(x=>x.id===id), c = cust(j.cust);
+  const next = {Scheduled:'En route','En route':'In progress','In progress':'Complete'}[j.status];
+  openDrawer(`<h2>${j.id} · ${esc(j.service)}</h2><div class="sub" style="color:var(--muted)">${fmtDY(j.date)} · ${j.start}–${j.end} · ${statusPill(j.status)}</div>
+    <section><h3>Customer</h3><b>${esc(c.name)}</b><br>${esc(c.addr)}, ${esc(c.city)} ${c.zip}<br><a href="tel:${c.phone}">${c.phone}</a> · <a href="mailto:${c.email}">${esc(c.email)}</a>${c.notes?`<p style="margin-top:.5rem;color:var(--muted);font-size:.85rem">Note: ${esc(c.notes)}</p>`:''}</section>
+    <section><h3>Assignment</h3><dl class="kv" style="margin-top:0"><dt>Technician</dt><dd>${techTag(j.tech)}</dd><dt>Service type</dt><dd>${j.type}</dd><dt>Quoted amount</dt><dd class="num">${j.amount?fmt$(j.amount):'To be quoted on site'}</dd></dl></section>
+    <section><h3>Actions</h3><div style="display:flex;flex-wrap:wrap;gap:.5rem">${next?`<button class="btn btn-blue btn-sm" onclick="setJobStatus('${j.id}','${next}')">Mark ${next.toLowerCase()}</button>`:''}${j.status==='Complete'?`<button class="btn btn-cta btn-sm" onclick="closeAll();toast('Invoice drafted from ${j.id}');go('invoices')">Create invoice</button>`:''}<button class="btn btn-ghost btn-sm" onclick="toast('Reschedule opens the dispatch picker (mock)')">Reschedule</button><button class="btn btn-ghost btn-sm" onclick="closeAll();showCustomer('${c.id}')">View customer</button></div></section>`);
+}
+function setJobStatus(id, s){ const j=jobs.find(x=>x.id===id); j.status=s; toast(`${id} marked ${s.toLowerCase()}`); closeAll(); render(); }
+
+let custQ = '';
+views.customers = () => {
+  setTitle('Customers', `${customers.length} customers · ${customers.filter(c=>c.balance>0).length} with a balance`);
+  const list = customers.filter(c=>!custQ || (c.name+' '+c.addr+' '+c.city+' '+c.phone).toLowerCase().includes(custQ)).sort((a,b)=>a.name.localeCompare(b.name));
+  return `<div class="card"><div class="toolbar"><label class="search"><svg><use href="#ic-search"/></svg><input placeholder="Search name, address, phone" value="${esc(custQ)}" oninput="custQ=this.value.toLowerCase();render()"></label><span class="spacer"></span><button class="btn btn-cta btn-sm" onclick="openModal('customer')"><svg><use href="#ic-plus"/></svg>New customer</button></div>
+  <div class="tbl-wrap" style="margin-top:1rem"><table><thead><tr><th>Customer</th><th>Address</th><th>Phone</th><th>Customer since</th><th>Equipment</th><th class="r">Lifetime value</th><th class="r">Balance</th></tr></thead><tbody>${list.map(c=>`<tr class="click" onclick="showCustomer('${c.id}')"><td class="name">${esc(c.name)}</td><td>${esc(c.addr)}<span class="sub">${esc(c.city)}, OK ${c.zip}</span></td><td class="num">${c.phone}</td><td class="num">${fmtDY(c.since)}</td><td>${c.equipment.length?c.equipment.map(e=>esc(e.model.split(' (')[0])).join(', '):'<span class="sub">None on file</span>'}</td><td class="r num">${fmt$(c.ltv)}</td><td class="r num">${c.balance?`<b style="color:var(--crit)">${fmt$(c.balance)}</b>`:'—'}</td></tr>`).join('')}</tbody></table></div></div>`;
+};
+function showCustomer(id){
+  const c = cust(id);
+  const hist = jobs.filter(j=>j.cust===id).sort((a,b)=>b.date-a.date);
+  const inv = invoices.filter(i=>i.cust===id).sort((a,b)=>b.date-a.date);
+  openDrawer(`<h2>${esc(c.name)}</h2><div style="color:var(--muted)">Customer since ${fmtDY(c.since)} · Lifetime ${fmt$(c.ltv)}</div>
+    <section><h3>Contact</h3>${esc(c.addr)}<br>${esc(c.city)}, OK ${c.zip}<br><a href="tel:${c.phone}">${c.phone}</a> · <a href="mailto:${c.email}">${esc(c.email)}</a>${c.notes?`<p style="margin-top:.5rem;color:var(--muted);font-size:.85rem">${esc(c.notes)}</p>`:''}
+      <div style="display:flex;gap:.5rem;margin-top:.8rem"><a class="btn btn-blue btn-sm" href="tel:${c.phone}"><svg><use href="#ic-phone"/></svg>Call</a><button class="btn btn-ghost btn-sm" onclick="toast('SMS goes out through Resend/Twilio once connected')">Text</button><button class="btn btn-cta btn-sm" onclick="closeAll();openModal('job','${c.id}')">Book job</button></div></section>
+    <section><h3>Installed equipment</h3>${c.equipment.length?c.equipment.map(e=>`<div class="item" style="grid-template-columns:1fr"><div><b>${esc(e.model)}</b><span>${e.type} · Serial ${esc(e.serial)}<br>Installed ${fmtDY(e.installed)} · Warranty to ${fmtDY(e.warranty)}${e.lastService?` · Last service ${fmtD(e.lastService)}`:''}</span>${e.type.includes('Tankless')&&(!e.lastService||days(e.lastService,TODAY)>330)?`<span class="pill p-warn" style="margin-top:.3rem">Descaling due</span>`:''}</div></div>`).join(''):'<span style="color:var(--muted)">Nothing on file yet.</span>'}</section>
+    <section><h3>Job history</h3><div class="list">${hist.map(j=>`<div class="item" onclick="showJob('${j.id}')" style="cursor:pointer"><span class="t num">${fmtD(j.date)}</span><div><b>${esc(j.service)}</b><span>${j.id} · ${techName(j.tech)}</span></div><span class="num">${j.amount?fmt$(j.amount):'TBD'}</span></div>`).join('')||'<span style="color:var(--muted)">No jobs yet.</span>'}</div></section>
+    <section><h3>Invoices</h3><div class="list">${inv.map(i=>`<div class="item"><span class="t">${i.id}</span><div><b class="num">${fmt$(i.amount)}</b><span>${esc(i.desc)}</span></div>${statusPill(invStatus(i))}</div>`).join('')||'<span style="color:var(--muted)">No invoices.</span>'}</div></section>`);
+}
+
+let estFilter = 'all';
+views.estimates = () => {
+  const open = estimates.filter(e=>['Sent','Viewed'].includes(e.status));
+  setTitle('Estimates', `${open.length} open · ${fmt$(open.reduce((s,e)=>s+e.amount,0))} in the pipeline`);
+  const stages = ['Draft','Sent','Viewed','Approved','Declined'];
+  const list = estimates.filter(e=>estFilter==='all'||e.status===estFilter).sort((a,b)=>b.date-a.date);
+  return `<div class="g4" style="grid-template-columns:repeat(5,1fr)">${stages.map(s=>{ const l=estimates.filter(e=>e.status===s); return `<div class="card stat" style="cursor:pointer" onclick="estFilter='${s}';render()"><div class="label">${s}</div><div class="value num" style="font-size:1.4rem">${fmt$(l.reduce((x,e)=>x+e.amount,0))}</div><div class="delta">${l.length} estimate${l.length!==1?'s':''}</div></div>`; }).join('')}</div>
+  <div class="card"><div class="toolbar"><div class="chips">${['all',...stages].map(s=>`<button class="chip ${estFilter===s?'on':''}" onclick="estFilter='${s}';render()">${s==='all'?'All':s}</button>`).join('')}</div><span class="spacer"></span><button class="btn btn-cta btn-sm" onclick="openModal('estimate')"><svg><use href="#ic-plus"/></svg>New estimate</button></div>
+  <div class="tbl-wrap" style="margin-top:1rem"><table><thead><tr><th>Estimate</th><th>Date</th><th>Customer</th><th>Description</th><th>By</th><th>Status</th><th class="r">Amount</th><th></th></tr></thead><tbody>${list.map(e=>`<tr><td class="name">${e.id}</td><td class="num">${fmtD(e.date)}<span class="sub">${days(e.date,TODAY)}d ago</span></td><td>${esc(cust(e.cust).name)}<span class="sub">${esc(cust(e.cust).city)}</span></td><td class="wrap">${esc(e.desc)}</td><td>${techTag(e.tech)}</td><td>${statusPill(e.status)}</td><td class="r num">${fmt$(e.amount)}</td><td style="text-align:right">${['Sent','Viewed'].includes(e.status)?`<button class="btn btn-ghost btn-sm" onclick="setEst('${e.id}','Approved')">Approve</button> <button class="btn btn-ghost btn-sm" onclick="toast('Follow-up email queued (Resend)')">Follow up</button>`:e.status==='Draft'?`<button class="btn btn-blue btn-sm" onclick="setEst('${e.id}','Sent')">Send</button>`:e.status==='Approved'?`<button class="btn btn-cta btn-sm" onclick="openModal('job','${e.cust}','${e.id}')">Schedule</button>`:''}</td></tr>`).join('')}</tbody></table></div></div>`;
+};
+function setEst(id, s){ estimates.find(e=>e.id===id).status = s; toast(`${id} marked ${s.toLowerCase()}`); render(); }
+
+let invFilter = 'all';
+views.invoices = () => {
+  const openInv = invoices.filter(i=>invStatus(i)!=='Paid');
+  const ar = openInv.reduce((s,i)=>s+(i.amount-i.paid),0);
+  const overdue = openInv.filter(i=>invStatus(i)==='Overdue');
+  setTitle('Invoices & Accounts Receivable', `${fmt$(ar)} outstanding across ${openInv.length} invoices`);
+  const paidMtd = invoices.filter(i=>i.paid>0 && i.date.getMonth()===8).reduce((s,i)=>s+i.paid,0);
+  const list = invoices.filter(i=>invFilter==='all'||invStatus(i)===invFilter).sort((a,b)=>b.date-a.date);
+  return `<div class="g4">
+    <div class="card stat"><div class="label">Total outstanding</div><div class="value num">${fmt$(ar)}</div><div class="delta">${openInv.length} open invoices</div></div>
+    <div class="card stat"><div class="label">Overdue</div><div class="value num" style="color:var(--crit)">${fmt$(overdue.reduce((s,i)=>s+(i.amount-i.paid),0))}</div><div class="delta down"><svg width="14" height="14"><use href="#ic-warn"/></svg>${overdue.length} invoice${overdue.length!==1?'s':''} past due</div></div>
+    <div class="card stat"><div class="label">Collected this month</div><div class="value num">${fmt$(paidMtd)}</div><div class="delta up"><svg width="14" height="14"><use href="#ic-up"/></svg>Avg. 4 days to pay</div></div>
+    <div class="card stat"><div class="label">Due in next 7 days</div><div class="value num">${fmt$(openInv.filter(i=>days(TODAY,i.due)>=0&&days(TODAY,i.due)<=7).reduce((s,i)=>s+(i.amount-i.paid),0))}</div><div class="delta">${openInv.filter(i=>days(TODAY,i.due)>=0&&days(TODAY,i.due)<=7).length} invoices</div></div>
+  </div>
+  <div class="g12">
+    <div class="card"><div class="card-h"><div><h2>A/R aging</h2><div class="sub">Open balances by days past due</div></div></div>${agingChart()}<p style="font-size:.8rem;color:var(--muted);margin-top:.8rem">Blue is not yet due. Yellow is 1 to 60 days late. Red is 61 days or more.</p></div>
+    <div class="card"><div class="toolbar"><div class="chips">${['all','Due','Overdue','Partial','Paid'].map(s=>`<button class="chip ${invFilter===s?'on':''}" onclick="invFilter='${s}';render()">${s==='all'?'All':s}</button>`).join('')}</div><span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="toast('Reminders queued for ${overdue.length} overdue invoices (Resend)')">Send overdue reminders</button><button class="btn btn-cta btn-sm" onclick="openModal('invoice')"><svg><use href="#ic-plus"/></svg>New invoice</button></div>
+      <div class="tbl-wrap" style="margin-top:1rem"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Issued</th><th>Due</th><th>Status</th><th class="r">Amount</th><th class="r">Balance</th><th></th></tr></thead><tbody>${list.map(i=>{ const st=invStatus(i), bal=i.amount-i.paid; return `<tr><td class="name">${i.id}<span class="sub" style="font-weight:400">${esc(i.desc)}</span></td><td>${esc(cust(i.cust).name)}</td><td class="num">${fmtD(i.date)}</td><td class="num">${fmtD(i.due)}${st==='Overdue'?`<span class="sub" style="color:var(--crit)">${days(i.due,TODAY)}d late</span>`:''}</td><td>${statusPill(st)}</td><td class="r num">${fmt$c(i.amount)}</td><td class="r num">${bal>0?`<b>${fmt$c(bal)}</b>`:'—'}</td><td style="text-align:right">${bal>0?`<button class="btn btn-blue btn-sm" onclick="openModal('payment','${i.id}')">Record payment</button>`:`<button class="btn btn-ghost btn-sm" onclick="toast('Receipt emailed to ${esc(cust(i.cust).email)}')">Receipt</button>`}</td></tr>`; }).join('')}</tbody></table></div></div>
+  </div>`;
+};
+
+views.reports = () => {
+  setTitle('Reports', 'Trailing 12 months');
+  const ytd = monthlyRev.slice(3).reduce((s,m)=>s+m.v,0);
+  const techRows = techs.map(t=>{ const done=jobs.filter(j=>j.tech===t.id&&j.status==='Complete'); return {t, done:done.length, rev:t.revMonth, avg:done.length?done.reduce((s,j)=>s+j.amount,0)/done.length:0}; });
+  return `<div class="g4">
+    <div class="card stat"><div class="label">Revenue, year to date</div><div class="value num">${fmt$(ytd)}</div><div class="delta up"><svg width="14" height="14"><use href="#ic-up"/></svg>18% vs. 2025</div></div>
+    <div class="card stat"><div class="label">Average ticket</div><div class="value num">${fmt$(Math.round(jobs.filter(j=>j.amount).reduce((s,j)=>s+j.amount,0)/jobs.filter(j=>j.amount).length))}</div><div class="delta">Across ${jobs.length} jobs on the board</div></div>
+    <div class="card stat"><div class="label">Estimate approval rate</div><div class="value num">${Math.round(estimates.filter(e=>e.status==='Approved').length/estimates.filter(e=>e.status!=='Draft').length*100)}%</div><div class="delta">${estimates.filter(e=>e.status==='Approved').length} of ${estimates.filter(e=>e.status!=='Draft').length} sent</div></div>
+    <div class="card stat"><div class="label">Repeat customers</div><div class="value num">${Math.round(customers.filter(c=>jobs.filter(j=>j.cust===c.id).length>1).length/customers.length*100)}%</div><div class="delta">${customers.filter(c=>jobs.filter(j=>j.cust===c.id).length>1).length} of ${customers.length} have booked more than once</div></div>
+  </div>
+  <div class="card"><div class="card-h"><div><h2>Revenue by month</h2><div class="sub">Collected · September is month to date</div></div></div><div class="chart" id="ch-month"></div></div>
+  <div class="g2">
+    <div class="card"><div class="card-h"><div><h2>Revenue by service</h2><div class="sub">Month to date</div></div></div>${hbars(revByService)}</div>
+    <div class="card"><div class="card-h"><div><h2>Technician performance</h2><div class="sub">This month</div></div></div><div class="tbl-wrap"><table><thead><tr><th>Technician</th><th class="r">Jobs done</th><th class="r">Revenue</th><th class="r">Avg. ticket</th></tr></thead><tbody>${techRows.map(r=>`<tr><td>${techTag(r.t.id)}</td><td class="r num">${r.done}</td><td class="r num">${fmt$(r.rev)}</td><td class="r num">${fmt$(Math.round(r.avg))}</td></tr>`).join('')}</tbody></table></div></div>
+  </div>
+  <div class="card"><div class="card-h"><div><h2>A/R aging</h2></div></div>${agingChart()}</div>`;
+};
+
+views.staff = () => {
+  setTitle('Staff', `${staff.length} team members · ${techs.length} in the field`);
+  return `<div class="g2">${staff.map(s=>{ const lic = s.licExp ? (days(TODAY,s.licExp)<45 ? 'p-warn' : 'p-good') : 'p-neutral'; return `<div class="card"><div class="staff"><div class="avatar" style="background:${TECH_COLORS[s.id]||'var(--muted)'}">${s.id}</div><div style="min-width:0"><div style="display:flex;justify-content:space-between;gap:.6rem;align-items:start"><div><h3>${s.name}</h3><div class="role">${s.role}</div></div>${statusPill(s.status)}</div>
+    <dl class="kv"><dt>Phone</dt><dd><a href="tel:${s.phone}">${s.phone}</a></dd><dt>Email</dt><dd>${s.email}</dd><dt>License</dt><dd>${s.license}${s.licExp?` <span class="pill ${lic}">exp ${fmtD(s.licExp)}${days(TODAY,s.licExp)<45?', renew':''}</span>`:''}</dd><dt>Hours this week</dt><dd>${s.hours}</dd>${s.jobsWeek?`<dt>Jobs this week</dt><dd>${s.jobsWeek}</dd><dt>Revenue, MTD</dt><dd class="num">${fmt$(s.revMonth)}</dd>`:''}<dt>Pay</dt><dd>${s.pay}</dd><dt>Hired</dt><dd>${fmtDY(s.hired)}</dd></dl>
+    ${s.certs.length?`<div style="margin-top:.8rem"><div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:.4rem">Certifications</div><div class="chips">${s.certs.map(c=>`<span class="pill ${days(TODAY,c.exp)<60?'p-warn':'p-neutral'}">${esc(c.n)} · ${fmtD(c.exp)}</span>`).join('')}</div></div>`:''}
+    <div style="display:flex;gap:.5rem;margin-top:.9rem"><button class="btn btn-ghost btn-sm" onclick="toast('Timesheet export coming with Supabase')">Timesheet</button><button class="btn btn-ghost btn-sm" onclick="schedTech='${s.id}';go('schedule')">Schedule</button></div></div></div></div>`; }).join('')}
+  <div class="card"><h2>Add a team member</h2><p style="color:var(--muted);font-size:.85rem;margin:.3rem 0 1rem">Roles control what each login can see once Supabase auth is wired in.</p><form class="f" onsubmit="event.preventDefault();toast('Team member added (mock)')"><div class="row"><label>Name<input placeholder="Full name"></label><label>Role<select><option>Technician</option><option>Apprentice</option><option>Office</option><option>Admin</option></select></label></div><div class="row"><label>Phone<input type="tel"></label><label>Email<input type="email"></label></div><label>License number<input placeholder="OK #"></label><div class="actions"><button class="btn btn-cta" type="submit">Add</button></div></form></div></div>`;
+};
+
+views.equipment = () => {
+  setTitle('Equipment & Fleet', `${vehicles.length} vehicles · ${tools.length} tracked tools`);
+  return `<div class="card"><div class="card-h"><div><h2>Vehicles</h2><div class="sub">Service intervals, registration, and insurance</div></div><button class="btn btn-ghost btn-sm" onclick="toast('Vehicle added (mock)')">Add vehicle</button></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Vehicle</th><th>Driver</th><th class="r">Odometer</th><th>Next service</th><th>Registration</th><th>Insurance</th><th>Status</th><th></th></tr></thead><tbody>${vehicles.map(v=>{ const pct=Math.min(100,Math.max(0,100-((v.nextService-v.miles)/3000*100))); return `<tr><td class="name">${esc(v.name)}<span class="sub" style="font-weight:400">${v.plate}</span></td><td>${techTag(v.driver)}</td><td class="r num">${v.miles.toLocaleString()} mi</td><td><div class="num">${v.nextServiceType} at ${v.nextService.toLocaleString()} mi</div><div class="meter ${v.miles>=v.nextService?'crit':pct>80?'warn':''}" style="width:140px;margin-top:.3rem"><i style="width:${pct}%"></i></div></td><td class="num">${fmtD(v.reg)}${days(TODAY,v.reg)<60?' <span class="pill p-warn">renew</span>':''}</td><td class="num">${fmtD(v.ins)}</td><td>${statusPill(v.status)}</td><td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="toast('Service logged for ${v.plate} (mock)')">Log service</button></td></tr>`; }).join('')}</tbody></table></div></div>
+  <div class="card"><div class="card-h"><div><h2>Tools & test equipment</h2><div class="sub">Calibration and service schedule</div></div><button class="btn btn-ghost btn-sm" onclick="toast('Tool added (mock)')">Add tool</button></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Tag</th><th>Tool</th><th>Assigned to</th><th>Last service</th><th>Next due</th><th>Status</th><th></th></tr></thead><tbody>${tools.map(t=>`<tr><td class="name">${t.tag}</td><td>${esc(t.name)}</td><td>${t.assigned}</td><td class="num">${fmtDY(t.lastService)}</td><td class="num">${fmtDY(t.nextService)}</td><td>${statusPill(t.status)}</td><td style="text-align:right">${t.status!=='OK'?`<button class="btn btn-blue btn-sm" onclick="toast('${esc(t.name)} sent for calibration (mock)')">Schedule</button>`:''}</td></tr>`).join('')}</tbody></table></div></div>`;
+};
+
+views.inventory = () => {
+  const low = inventory.filter(p=>p.onHand<p.reorder);
+  const value = inventory.reduce((s,p)=>s+p.onHand*p.cost,0);
+  setTitle('Inventory', `${inventory.length} SKUs · ${fmt$(value)} on hand · ${low.length} below reorder point`);
+  return `<div class="card"><div class="toolbar"><div class="chips"><span class="chip on">All</span></div><span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="toast('Purchase order drafted for ${low.length} items (mock)')">Draft purchase order</button><button class="btn btn-cta btn-sm" onclick="toast('Item added (mock)')"><svg><use href="#ic-plus"/></svg>Add item</button></div>
+    <div class="tbl-wrap" style="margin-top:1rem"><table><thead><tr><th>SKU</th><th>Item</th><th>Location</th><th class="r">On hand</th><th class="r">Reorder at</th><th>Stock</th><th class="r">Unit cost</th><th class="r">Value</th></tr></thead><tbody>${inventory.map(p=>{ const pct=Math.min(100,p.onHand/(p.reorder*2)*100); const lvl=p.onHand===0?'crit':p.onHand<p.reorder?'warn':''; return `<tr><td class="name">${p.sku}</td><td class="wrap">${esc(p.name)}</td><td>${p.loc}</td><td class="r num">${p.onHand}</td><td class="r num">${p.reorder}</td><td><div class="meter ${lvl}" style="width:110px"><i style="width:${pct}%"></i></div>${p.onHand<p.reorder?`<span class="pill ${lvl==='crit'?'p-crit':'p-warn'}" style="margin-top:.3rem">${p.onHand===0?'Out of stock':'Low'}</span>`:''}</td><td class="r num">${fmt$(p.cost)}</td><td class="r num">${fmt$(p.onHand*p.cost)}</td></tr>`; }).join('')}</tbody></table></div></div>`;
+};
+
+views.settings = () => {
+  setTitle('Settings', 'Company profile and integrations');
+  return `<div class="g2">
+    <div class="card"><h2>Company</h2><form class="f" style="margin-top:.9rem" onsubmit="event.preventDefault();toast('Company profile saved (mock)')"><label>Business name<input value="Porter & Co. Plumbing"></label><div class="row"><label>Phone<input value="918-265-4033"></label><label>Email<input value="porterandcoplumbing@gmail.com"></label></div><label>Address<input value="3101 S 63rd West Ave, Tulsa, OK 74107"></label><div class="row"><label>Oklahoma license<input value="#00200229"></label><label>Hours<input value="Mon–Sat 8 AM – 8 PM"></label></div><div class="row"><label>Default invoice terms<select><option>Due on completion</option><option>Net 15</option><option>Net 30</option></select></label><label>Sales tax rate<input value="8.517%"></label></div><div class="actions"><button class="btn btn-cta" type="submit">Save</button></div></form></div>
+    <div style="display:grid;gap:1.25rem;align-content:start">
+      <div class="card"><h2>Integrations</h2><p style="color:var(--muted);font-size:.85rem;margin:.3rem 0 1rem">Planned stack. Each card turns green once the service is connected.</p><div class="list">
+        <div class="integ"><div class="logo" style="background:#3ECF8E">S</div><div><b>Supabase</b><span>Postgres database, auth, and row-level security for every table on this dashboard</span></div>${statusPill('Draft').replace('Draft','Not connected')}</div>
+        <div class="integ"><div class="logo" style="background:#000">R</div><div><b>Resend</b><span>Transactional email: estimates, invoices, payment receipts, overdue reminders</span></div>${statusPill('Draft').replace('Draft','Not connected')}</div>
+        <div class="integ"><div class="logo" style="background:#000">▲</div><div><b>Vercel</b><span>Hosting for the admin app and the public site, with preview deploys per branch</span></div>${statusPill('Draft').replace('Draft','Not connected')}</div>
+        <div class="integ"><div class="logo" style="background:#635BFF">St</div><div><b>Stripe</b><span>Card payments on invoices and a pay link in every reminder email</span></div>${statusPill('Draft').replace('Draft','Planned')}</div>
+      </div></div>
+      <div class="card"><h2>Users & roles</h2><div class="tbl-wrap" style="margin-top:.7rem"><table><thead><tr><th>User</th><th>Role</th><th>Access</th></tr></thead><tbody>${staff.map(s=>`<tr><td class="name">${s.name}</td><td>${s.id==='MP'?'Admin':s.id==='KW'?'Office':'Technician'}</td><td class="wrap" style="color:var(--muted)">${s.id==='MP'?'Everything':s.id==='KW'?'Schedule, customers, estimates, invoices, inventory':'Own schedule and job details only'}</td></tr>`).join('')}</tbody></table></div></div>
+    </div></div>`;
+};
+
+/* ============ MODALS ============ */
+function openModal(kind, custId, estId){
+  const box = document.getElementById('modal-box');
+  const custOpts = customers.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(c=>`<option value="${c.id}" ${c.id===custId?'selected':''}>${esc(c.name)} · ${esc(c.city)}</option>`).join('');
+  const techOpts = techs.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
+  const est = estId ? estimates.find(e=>e.id===estId) : null;
+  if(kind==='job') box.innerHTML = `<h2>New job</h2><form class="f" onsubmit="return saveJob(event)">
+    <label>Customer<select name="cust" required>${custOpts}</select></label>
+    <label>Service<input name="service" required value="${est?esc(est.desc):''}" placeholder="What are we doing?"></label>
+    <div class="row"><label>Type<select name="type">${['Water heater','Tankless','Leak repair','Fixtures','Gas','Drains','Inspection','Upgrades'].map(t=>`<option>${t}</option>`).join('')}</select></label><label>Technician<select name="tech">${techOpts}</select></label></div>
+    <div class="row"><label>Date<input name="date" type="date" value="2026-09-21" required></label><label>Quoted amount<input name="amount" type="number" min="0" step="1" value="${est?est.amount:''}" placeholder="0 if quoting on site"></label></div>
+    <div class="row"><label>Start<input name="start" value="8:00"></label><label>End<input name="end" value="10:00"></label></div>
+    <div class="actions"><button class="btn btn-ghost" type="button" onclick="closeAll()">Cancel</button><button class="btn btn-cta" type="submit">Save job</button></div></form>`;
+  if(kind==='payment'){ const i=invoices.find(x=>x.id===custId); box.innerHTML = `<h2>Record payment · ${i.id}</h2><p style="color:var(--muted);margin-bottom:1rem">${esc(cust(i.cust).name)} · Balance ${fmt$c(i.amount-i.paid)}</p><form class="f" onsubmit="return savePayment(event,'${i.id}')">
+    <div class="row"><label>Amount<input name="amount" type="number" step="0.01" min="0.01" max="${i.amount-i.paid}" value="${i.amount-i.paid}" required></label><label>Method<select name="method"><option>Card</option><option>Check</option><option>Cash</option><option>ACH</option></select></label></div>
+    <div class="row"><label>Date<input type="date" value="2026-09-18"></label><label>Reference<input placeholder="Check # or last 4"></label></div>
+    <div class="actions"><button class="btn btn-ghost" type="button" onclick="closeAll()">Cancel</button><button class="btn btn-cta" type="submit">Record payment</button></div></form>`; }
+  if(kind==='customer') box.innerHTML = `<h2>New customer</h2><form class="f" onsubmit="return saveCustomer(event)"><label>Name<input name="name" required></label><div class="row"><label>Phone<input name="phone" type="tel" required></label><label>Email<input name="email" type="email"></label></div><label>Street address<input name="addr" required></label><div class="row"><label>City<input name="city" value="Tulsa"></label><label>ZIP<input name="zip"></label></div><label>Notes<textarea name="notes"></textarea></label><div class="actions"><button class="btn btn-ghost" type="button" onclick="closeAll()">Cancel</button><button class="btn btn-cta" type="submit">Save customer</button></div></form>`;
+  if(kind==='estimate') box.innerHTML = `<h2>New estimate</h2><form class="f" onsubmit="return saveEstimate(event)"><label>Customer<select name="cust">${custOpts}</select></label><label>Description<textarea name="desc" required></textarea></label><div class="row"><label>Amount<input name="amount" type="number" min="0" required></label><label>Prepared by<select name="tech">${techOpts}</select></label></div><div class="actions"><button class="btn btn-ghost" type="button" onclick="closeAll()">Cancel</button><button class="btn btn-ghost" type="submit" data-status="Draft">Save draft</button><button class="btn btn-cta" type="submit" data-status="Sent">Save &amp; send</button></div></form>`;
+  if(kind==='invoice') box.innerHTML = `<h2>New invoice</h2><form class="f" onsubmit="return saveInvoice(event)"><label>Customer<select name="cust">${custOpts}</select></label><label>Description<input name="desc" required></label><div class="row"><label>Amount<input name="amount" type="number" min="0" step="0.01" required></label><label>Terms<select name="terms"><option value="0">Due on completion</option><option value="15">Net 15</option><option value="30">Net 30</option></select></label></div><div class="actions"><button class="btn btn-ghost" type="button" onclick="closeAll()">Cancel</button><button class="btn btn-cta" type="submit">Create &amp; send</button></div></form>`;
+  document.getElementById('overlay').classList.add('show'); document.getElementById('modal').classList.add('show');
+  const first = box.querySelector('input,select'); if(first) first.focus();
+}
+let seq = 1062, estSeq = 2240, invSeq = 3130, custSeq = 13;
+function saveJob(e){ e.preventDefault(); const f=new FormData(e.target); const [y,m,dd]=f.get('date').split('-').map(Number); jobs.push({id:'J-'+(seq++), date:new Date(y,m-1,dd), start:f.get('start'), end:f.get('end'), cust:f.get('cust'), service:f.get('service'), type:f.get('type'), tech:f.get('tech'), status:'Scheduled', amount:+f.get('amount')||0}); closeAll(); toast('Job scheduled'); go('schedule'); render(); return false; }
+function savePayment(e, id){ e.preventDefault(); const f=new FormData(e.target); const i=invoices.find(x=>x.id===id); i.paid = Math.min(i.amount, i.paid + parseFloat(f.get('amount'))); const c=cust(i.cust); c.balance = invoices.filter(x=>x.cust===c.id).reduce((s,x)=>s+(x.amount-x.paid),0); closeAll(); toast(`Payment of ${fmt$c(parseFloat(f.get('amount')))} recorded on ${id}`); render(); return false; }
+function saveCustomer(e){ e.preventDefault(); const f=new FormData(e.target); const id='C'+String(custSeq++).padStart(3,'0'); customers.push({id, name:f.get('name'), phone:f.get('phone'), email:f.get('email')||'', addr:f.get('addr'), city:f.get('city'), zip:f.get('zip'), since:TODAY, ltv:0, balance:0, notes:f.get('notes')||'', equipment:[]}); closeAll(); toast('Customer added'); render(); return false; }
+function saveEstimate(e){ e.preventDefault(); const f=new FormData(e.target); const status = e.submitter?.dataset.status || 'Draft'; estimates.push({id:'E-'+(estSeq++), date:TODAY, cust:f.get('cust'), desc:f.get('desc'), amount:+f.get('amount'), status, tech:f.get('tech')}); closeAll(); toast(status==='Sent'?'Estimate sent to customer':'Estimate saved as draft'); render(); return false; }
+function saveInvoice(e){ e.preventDefault(); const f=new FormData(e.target); const due=new Date(TODAY); due.setDate(due.getDate()+ +f.get('terms')); invoices.push({id:'INV-'+(invSeq++), date:TODAY, due, cust:f.get('cust'), desc:f.get('desc'), amount:+f.get('amount'), paid:0}); closeAll(); toast('Invoice created and emailed'); render(); return false; }
+
+function globalSearch(q){
+  q = q.trim().toLowerCase(); if(!q) return;
+  const c = customers.find(c=>c.name.toLowerCase().includes(q)||c.phone.includes(q)||c.addr.toLowerCase().includes(q));
+  const j = jobs.find(j=>j.id.toLowerCase()===q); const i = invoices.find(i=>i.id.toLowerCase()===q);
+  if(j) { showJob(j.id); return; }
+  if(i) { invFilter='all'; go('invoices'); return; }
+  if(c && q.length>=3) showCustomer(c.id);
+}
+
+/* ============ ROUTER ============ */
+function render(){
+  const id = location.hash.replace('#','') || 'dashboard';
+  const v = views[id] || views.dashboard;
+  document.getElementById('content').innerHTML = v();
+  renderNav();
+  document.getElementById('sidebar').classList.remove('open');
+  if(id==='dashboard') columnChart(document.getElementById('ch-week'), weeklyRev, {label:'wk'});
+  if(id==='reports') columnChart(document.getElementById('ch-month'), monthlyRev, {label:'m', h:240});
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange', render);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeAll(); });
+try{ if(sessionStorage.getItem('porter-admin-demo')) document.getElementById('login').hidden = true; }catch(e){}
+render();
+</script>
+</body>
+</html>
