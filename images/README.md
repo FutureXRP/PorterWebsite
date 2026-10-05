@@ -7,7 +7,7 @@ pictures.
 
 | File | Where it shows | Best shape | What to use |
 |------|----------------|------------|-------------|
-| `logo.png` | Site header, footer, and the admin sidebar | Transparent PNG, about 400 px wide, trimmed tight | The company logo. The site shows a simple built-in mark until this file exists. Also send the logo's blue hex code so it can be set in the one `--blue` token in `index.html` and `admin/index.html`. |
+| `logo.png` | Site header and admin sign-in (already in place) | Transparent PNG | The company logo. `logo-white.png` (white ink for the black footer and admin sidebar), `favicon.png`, `apple-touch-icon.png`, and `og.png` are all cut from it; regenerate them if the logo changes. |
 | `hero.jpg` | Behind the home page hero (under a dark blue overlay) and in the "Why Porter & Co." section | Landscape, 1800 px wide | Matt on the job, a clean install, or the truck. Detail matters less in the hero because of the overlay. |
 | `water-heater.jpg` | "Tank or Tankless" section | 4:5 portrait, 1200 px wide | A finished water heater install with clean pipework |
 | `matt.jpg` | About page | 4:5 portrait, 1200 px wide | A real portrait of Matt, ideally in work clothes at a job site. Do not use stock here. |

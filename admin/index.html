@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Porter Admin</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='6' fill='%230D0D0D'/%3E%3Crect x='6' y='16' width='28' height='8' rx='2' fill='%231A73C9'/%3E%3Crect x='12' y='11' width='6' height='18' rx='1.5' fill='%23fff'/%3E%3Crect x='22' y='11' width='6' height='18' rx='1.5' fill='%23fff'/%3E%3Crect x='17' y='6' width='6' height='28' rx='1.5' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="../images/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,13 +13,13 @@
 :root{
   color-scheme:light;
   /* Brand: black, white, and the logo blue. Change --blue to the exact hex from the logo. */
-  --blue:#1A73C9; --blue-dark:#145CA3; --blue-mid:#1A73C9; --blue-tint:#E8F1FB;
-  --black:#0D0D0D; --black-2:#1A1A1A;
+  --blue:#1C98D8; --blue-dark:#1579B0; --blue-mid:#1C98D8; --blue-tint:#E6F3FB;
+  --black:#0A0A0A; --black-2:#1A1A1A;
   --orange:var(--blue); --orange-dark:var(--blue-dark); --orange-tint:var(--blue-tint);
   --bg:#F4F5F7; --surface:#FFFFFF; --surface-2:#F8F9FA; --line:#DCDFE4; --line-2:#ECEEF1;
   --text:#1F2328; --muted:#5C6570; --faint:#8A919B; --head:#0D0D0D;
   --sb-bg:#0D0D0D; --sb-text:#B3B3B3; --sb-active:#1F1F1F;
-  --s1:#1A73C9; --s2:#0D0D0D; --s3:#1baf7a; --s4:#eda100;
+  --s1:#1C98D8; --s2:#0D0D0D; --s3:#1baf7a; --s4:#eda100;
   --good:#0ca30c; --good-text:#006300; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
   --good-bg:#E6F6E6; --warn-bg:#FFF4DA; --crit-bg:#FBE5E5; --info-bg:#E7EFF9;
   --grid:#E6E9EE; --axis:#C9D1DB;
@@ -80,7 +80,7 @@ svg{display:block}
 .sb-nav .cnt{margin-left:auto;background:var(--orange);color:#fff;font-size:.7rem;font-weight:700;border-radius:999px;padding:.05rem .45rem;font-family:"Montserrat",sans-serif}
 .sb-foot{margin-top:auto;padding:1rem 1.2rem;font-size:.78rem;border-top:1px solid rgba(255,255,255,.08)}
 .sb-foot a{color:#fff;text-decoration:none;font-weight:600}
-.sb-foot .demo{display:inline-block;background:rgba(26,115,201,.18);color:#7DB8F0;border:1px solid rgba(26,115,201,.45);border-radius:4px;padding:.1rem .45rem;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+.sb-foot .demo{display:inline-block;background:rgba(28,152,216,.18);color:#7DB8F0;border:1px solid rgba(28,152,216,.45);border-radius:4px;padding:.1rem .45rem;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
 
 .main{min-width:0;display:flex;flex-direction:column}
 .topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:1rem;padding:.7rem 1.5rem}
@@ -234,7 +234,7 @@ form.f{display:grid;gap:.8rem}
 .f textarea{min-height:80px;resize:vertical}
 .f .row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
 .f .actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:.4rem}
-input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid rgba(26,115,201,.45);outline-offset:1px}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid rgba(28,152,216,.45);outline-offset:1px}
 .toast{position:fixed;left:50%;bottom:calc(1.2rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--head);color:#fff;padding:.7rem 1.1rem;border-radius:var(--radius);font-weight:600;font-size:.86rem;opacity:0;transition:.2s;z-index:50;box-shadow:var(--shadow);max-width:calc(100% - 2rem)}
 :root[data-theme="dark"] .toast{background:#fff;color:#0D0D0D}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .toast{background:#fff;color:#0D0D0D}}
@@ -245,6 +245,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{out
 .login .box{background:var(--surface);border-radius:var(--radius);padding:2rem;width:min(400px,100%);box-shadow:0 30px 60px -20px rgba(0,0,0,.6);border-top:6px solid var(--blue)}
 .login .brand{display:flex;align-items:center;gap:.7rem;margin-bottom:1.2rem}
 .login .brand svg{width:40px;height:40px}
+.login .brand:has(img) .mark{display:none}
 .login .brand b{font-family:"Montserrat",sans-serif;font-weight:800;color:var(--head);display:block}
 .login .brand small{color:var(--muted);font-size:.75rem}
 .login p{color:var(--muted);font-size:.85rem;margin-bottom:1rem}
@@ -297,7 +298,8 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{out
 <div class="login" id="login">
   <div class="box">
     <div class="brand">
-      <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="6" fill="#0D0D0D"/><rect x="6" y="16" width="28" height="8" rx="2" fill="#1A73C9"/><rect x="12" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="22" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="17" y="6" width="6" height="28" rx="1.5" fill="#fff"/></svg>
+      <img src="../images/logo.png" alt="" style="height:64px;width:auto" onerror="this.remove()">
+      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="6" fill="#0D0D0D"/><rect x="6" y="16" width="28" height="8" rx="2" fill="#1C98D8"/><rect x="12" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="22" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="17" y="6" width="6" height="28" rx="1.5" fill="#fff"/></svg>
       <div><b>Porter &amp; Co. Plumbing</b><small>Office admin</small></div>
     </div>
     <p>Demo sign-in. Any credentials work until Supabase auth is connected.</p>
@@ -312,8 +314,8 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{out
 <div class="app">
   <aside class="sidebar" id="sidebar">
     <a class="sb-brand" href="#dashboard">
-      <img src="../images/logo.png" alt="" style="height:36px;width:auto" onerror="this.remove()">
-      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="6" fill="#1A1A1A"/><rect x="6" y="16" width="28" height="8" rx="2" fill="#1A73C9"/><rect x="12" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="22" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="17" y="6" width="6" height="28" rx="1.5" fill="#fff"/></svg>
+      <img src="../images/logo-white.png" alt="" style="height:42px;width:auto" onerror="this.remove()">
+      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="6" fill="#1A1A1A"/><rect x="6" y="16" width="28" height="8" rx="2" fill="#1C98D8"/><rect x="12" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="22" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="17" y="6" width="6" height="28" rx="1.5" fill="#fff"/></svg>
       <span><b>Porter &amp; Co.</b><small>Office admin</small></span>
     </a>
     <div class="sb-sec">Operations</div>
@@ -360,7 +362,7 @@ const iso = dt => dt.toISOString().slice(0,10);
 const days = (a,b) => Math.round((b-a)/86400000);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-const TECH_COLORS = {MP:'#1A73C9', JR:'#1baf7a', DC:'#eda100'};
+const TECH_COLORS = {MP:'#1C98D8', JR:'#1baf7a', DC:'#eda100'};
 const staff = [
   {id:'MP', name:'Matt Porter', role:'Owner · Master Plumber', phone:'918-265-4033', email:'matt@porterandcoplumbing.com', status:'On job', license:'OK #00200229', licExp:d(6,30,2027), certs:[{n:'Rinnai Tankless Installer',exp:d(3,15,2027)},{n:'Navien NPE Certified',exp:d(11,1,2026)},{n:'OK Gas Fitter',exp:d(6,30,2027)}], hours:38.5, jobsWeek:11, revMonth:18420, pay:'Owner', hired:d(1,1,2019)},
   {id:'JR', name:'Jake Reynolds', role:'Journeyman Plumber', phone:'918-555-0147', email:'jake@porterandcoplumbing.com', status:'Available', license:'OK #00214788', licExp:d(10,5,2026), certs:[{n:'Bradford White Installer',exp:d(8,1,2027)},{n:'OSHA 10',exp:d(2,20,2028)}], hours:36, jobsWeek:9, revMonth:12960, pay:'$34.00/hr', hired:d(4,12,2023)},
@@ -618,7 +620,7 @@ views.dashboard = () => {
     <div class="card stat"><div class="label">Open estimates</div><div class="value num">${fmt$(openEst.reduce((s,e)=>s+e.amount,0))}</div><div class="delta">${openEst.length} awaiting a decision · ${Math.round(estimates.filter(e=>e.status==='Approved').length/estimates.filter(e=>e.status!=='Draft').length*100)}% approval rate this month</div></div>
   </div>
   <div class="g21">
-    <div class="card"><div class="card-h"><div><h2>Revenue collected by week</h2><div class="sub">Last 12 weeks · current week in orange</div></div><button class="btn btn-ghost btn-sm" onclick="go('reports')">Reports</button></div><div class="chart" id="ch-week"></div></div>
+    <div class="card"><div class="card-h"><div><h2>Revenue collected by week</h2><div class="sub">Last 12 weeks · current week in black</div></div><button class="btn btn-ghost btn-sm" onclick="go('reports')">Reports</button></div><div class="chart" id="ch-week"></div></div>
     <div class="card"><div class="card-h"><div><h2>Needs attention</h2><div class="sub">${alerts.length} item${alerts.length!==1?'s':''}</div></div></div><div class="list scroll-list">${alerts.map(a=>`<div class="alert ${a.lvl}"><svg><use href="#${a.icon}"/></svg><span>${a.text}</span>${a.act}</div>`).join('')}</div></div>
   </div>
   <div class="g21">
