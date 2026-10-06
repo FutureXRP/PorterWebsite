@@ -243,6 +243,10 @@ nav a:not(.btn):hover{color:var(--blue-mid)}
 .towns svg{width:14px;height:14px;color:var(--blue)}
 .mapbox{background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:1rem;color:var(--head)}
 .brand img{height:62px;width:auto}
+.logo-on-dark{display:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo-on-light{display:none}:root:not([data-theme="light"]) .logo-on-dark{display:block}}
+:root[data-theme="dark"] .logo-on-light{display:none}
+:root[data-theme="dark"] .logo-on-dark{display:block}
 .brand:has(img) .mark{display:none}
 footer .brand img{height:72px}
 @media (max-width:860px){.brand img{height:52px}}
@@ -361,7 +365,8 @@ footer .fine{border-top:1px solid rgba(255,255,255,.12);margin-top:2.5rem;paddin
 <header>
   <div class="wrap bar">
     <a class="brand" href="#home">
-      <img src="images/logo.png" alt="Porter & Co. Plumbing" onerror="this.remove()">
+      <img class="logo-on-light" src="images/logo.png" alt="Porter & Co. Plumbing" onerror="this.remove()">
+      <img class="logo-on-dark" src="images/logo-white.png" alt="Porter & Co. Plumbing" onerror="this.remove()">
       <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
         <rect width="40" height="40" rx="6" fill="#0D0D0D"/>
         <rect x="6" y="16" width="28" height="8" rx="2" fill="#1C98D8"/>
