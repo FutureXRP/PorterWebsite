@@ -246,6 +246,10 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{out
 .login .brand{display:flex;align-items:center;gap:.7rem;margin-bottom:1.2rem}
 .login .brand svg{width:40px;height:40px}
 .login .brand:has(img) .mark{display:none}
+.logo-on-dark{display:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .logo-on-light{display:none}:root:not([data-theme="light"]) .logo-on-dark{display:block}}
+:root[data-theme="dark"] .logo-on-light{display:none}
+:root[data-theme="dark"] .logo-on-dark{display:block}
 .login .brand b{font-family:"Montserrat",sans-serif;font-weight:800;color:var(--head);display:block}
 .login .brand small{color:var(--muted);font-size:.75rem}
 .login p{color:var(--muted);font-size:.85rem;margin-bottom:1rem}
@@ -298,7 +302,8 @@ input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{out
 <div class="login" id="login">
   <div class="box">
     <div class="brand">
-      <img src="../images/logo.png" alt="" style="height:64px;width:auto" onerror="this.remove()">
+      <img class="logo-on-light" src="../images/logo.png" alt="" style="height:64px;width:auto" onerror="this.remove()">
+      <img class="logo-on-dark" src="../images/logo-white.png" alt="" style="height:64px;width:auto" onerror="this.remove()">
       <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="6" fill="#0D0D0D"/><rect x="6" y="16" width="28" height="8" rx="2" fill="#1C98D8"/><rect x="12" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="22" y="11" width="6" height="18" rx="1.5" fill="#fff"/><rect x="17" y="6" width="6" height="28" rx="1.5" fill="#fff"/></svg>
       <div><b>Porter &amp; Co. Plumbing</b><small>Office admin</small></div>
     </div>
